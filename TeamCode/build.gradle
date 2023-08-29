@@ -23,7 +23,15 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs', 'C:\\Users\\Admin\\navx-micro\\android\\libs'
+    }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+    implementation (name:'navx_ftc-release', ext:'aar')
 }
+

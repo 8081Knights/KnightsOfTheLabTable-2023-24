@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -11,7 +12,11 @@ public class HardwareSoftware {
     DcMotorEx backLeft      = null;
     DcMotorEx frontLeft     = null;
 
+    AHRS gyro = null;
+
+
     public void init(HardwareMap ahw){
+
 
         hw= ahw;
 
@@ -34,4 +39,6 @@ public class HardwareSoftware {
 
 
     }
+
+
 }

@@ -40,5 +40,21 @@ public class HardwareSoftware {
 
     }
 
+    public DcMotorEx FLdrive(){
+        return frontLeft;
+    }
+
+    public DcMotorEx FRdrive(){
+        return frontRight;
+    }
+
+    public DcMotorEx BLdrive(){
+        return backLeft;
+    }
+
+    public DcMotorEx BRdrive(){
+        return backRight;
+    }
+
 
 }

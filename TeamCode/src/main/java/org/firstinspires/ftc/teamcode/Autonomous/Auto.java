@@ -12,8 +12,11 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name = "Auto", group = "Pushbot")
 public class Auto extends LinearOpMode {
     public static HardwareSoftware robot = new HardwareSoftware();
-    public static int InchConvert(double inches) {
-        double ticksPerInch = 41.6666666;
+
+    double ticksPerInch = 41.6666666;
+
+    public int InchConvert(double inches) {
+//        double ticksPerInch = 41.6666666;
         return (int) (ticksPerInch * inches);
     }
 
@@ -95,18 +98,16 @@ public class Auto extends LinearOpMode {
         robot.BLdrive().setVelocity(1000);
 
         //i dont think this is neccisary
-        while (robot.BLdrive().isBusy() || robot.BRdrive().isBusy() || robot.FLdrive().isBusy() || robot.FRdrive().isBusy()) {
+//        while (robot.BLdrive().isBusy() || robot.BRdrive().isBusy() || robot.FLdrive().isBusy() || robot.FRdrive().isBusy()) {
+//
+//
+//        }
 
-
-        }
-
-        while((robot.BLdrive().getCurrentPosition() < robot.BLdrive().getTargetPosition() ||
-                robot.FLdrive().getCurrentPosition() < robot.FLdrive().getTargetPosition() ||
-                robot.BRdrive().getCurrentPosition() < robot.BRdrive().getTargetPosition() ||
-                robot.FRdrive().getCurrentPosition() < robot.FRdrive().getTargetPosition()) &&
+        while((robot.BLdrive().getCurrentPosition() <= robot.BLdrive().getTargetPosition() ||
+                robot.FLdrive().getCurrentPosition() <= robot.FLdrive().getTargetPosition() ||
+                robot.BRdrive().getCurrentPosition() <= robot.BRdrive().getTargetPosition() ||
+                robot.FRdrive().getCurrentPosition() <= robot.FRdrive().getTargetPosition()) &&
                 timer.time(TimeUnit.MILLISECONDS) < timeout){
-
-            double ticksPerInch = 41.6666666;
 
 
             telemetry.addData("Front Left Ticks : ", robot.FLdrive().getCurrentPosition());
@@ -128,10 +129,16 @@ public class Auto extends LinearOpMode {
 
 
         }
-        robot.FRdrive().setVelocity(0);
-        robot.FLdrive().setVelocity(0);
-        robot.BRdrive().setVelocity(0);
-        robot.BRdrive().setVelocity(0);
+        robot.FRdrive().setPower(0);
+        robot.FLdrive().setPower(0);
+        robot.BRdrive().setPower(0);
+        robot.BRdrive().setPower(0);
+
+        telemetry.addLine("Drive Complete");
+        telemetry.update();
+
+        sleep(10);
+
     }
     public void spin(double degree) {
         robot.FRdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

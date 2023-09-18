@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,6 +15,7 @@ public class PIDTuner extends OpMode {
 
     boolean aDown = false;
     boolean bDown = false;
+    boolean xDown = false;
 
     @Override
     public void init() {
@@ -28,7 +31,28 @@ public class PIDTuner extends OpMode {
         if(!gamepad1.a && aDown){
             aDown = false;
 
-            //robot.
+            robot.pidDrive(0.5, 1000);
+        }
+
+        if(gamepad1.b){
+            bDown = true;
+        }
+        if(!gamepad1.a && aDown){
+            bDown = false;
+
+            robot.pidDrive(0.5, -1000);
+        }
+
+        if(gamepad1.x){
+            xDown = true;
+        }
+        if(!gamepad1.x && xDown){
+            xDown = false;
+            try {
+                sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

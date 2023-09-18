@@ -21,7 +21,7 @@ public class HardwareSoftware {
     DcMotorEx frontLeft     = null;
 
 
-    private navXPIDController yawPIDController;
+    public navXPIDController yawPIDController;
     navXPIDController.PIDResult yawPIDResult;
 
 
@@ -38,12 +38,12 @@ public class HardwareSoftware {
     private final double YAW_PID_D = 0.0;
 
     //Motor PIDF Controller Tuning Constants
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double kF = 0;
+    double kP = 1.3;
+    double kI = 0.0;
+    double kD = 0.015;
+    double kF = 0.0025;
 
-    PIDFController pidf = new PIDFController(kP, kI, kD, kF);
+    public PIDFController pidf = new PIDFController(kP, kI, kD, kF);
 
 
     int maxVelocity = 2000;
@@ -199,36 +199,26 @@ public class HardwareSoftware {
 
     }
 
-    public void pidDrive(double speed, int target){
+    public void pidDrive(double timeOut, int target){
         // Calculates the output of the PIDF algorithm based on sensor
 // readings. Requires both the measured value
 // and the desired setpoint
-//        double FLoutput = pidf.calculate(
-//                FLdrive().getCurrentPosition(), target
-//        );
-//
-//        double FRoutput = pidf.calculate(
-//                FRdrive().getCurrentPosition(), target
-//        );
-//
-//        double BLoutput = pidf.calculate(
-//                BLdrive().getCurrentPosition(), target
-//        );
-//
-//        double BRoutput = pidf.calculate(
-//                BRdrive().getCurrentPosition(), target
-//        );
+
+        ElapsedTime timer = new ElapsedTime();
+
+        timer.reset();
+        timer.startTime();
 
         /*
          * A sample control loop for a motor
          */
-        PController pController = new PController(kP);
+
 
         // We set the setpoint here.
         // Now we don't have to declare the setpoint
         // in our calculate() method arguments.
-        pController.setSetPoint(target);
-        pController.setTolerance(5, 0.1);
+        pidf.setSetPoint(target);
+        pidf.setTolerance(100, 1);
 
         // perform the control loop
                 /*
@@ -236,26 +226,29 @@ public class HardwareSoftware {
                  * the desired setpoint within a specified tolerance
                  * range
                  */
-        while (!pController.atSetPoint()) {
-            double FLoutput = pController.calculate(
+        while (!pidf.atSetPoint() && timer.time(TimeUnit.MILLISECONDS) <= timeOut) {
+            double FLoutput = pidf.calculate(
                     FLdrive().getCurrentPosition()
             );
 
-            double FRoutput = pController.calculate(
+            double FRoutput = pidf.calculate(
                     FRdrive().getCurrentPosition()
             );
 
-            double BLoutput = pController.calculate(
+            double BLoutput = pidf.calculate(
                     BLdrive().getCurrentPosition()
             );
 
-            double BRoutput = pController.calculate(
+            double BRoutput = pidf.calculate(
                     BRdrive().getCurrentPosition()
             );
+
             FLdrive().setVelocity(FLoutput);
-            FRdrive().setVelocity(FRoutput);
             BLdrive().setVelocity(BLoutput);
+            FRdrive().setVelocity(FRoutput);
             BRdrive().setVelocity(BRoutput);
+
+
         }
 
 

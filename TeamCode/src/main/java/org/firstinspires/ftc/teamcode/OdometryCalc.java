@@ -15,14 +15,14 @@ public class OdometryCalc {
 
     //Distance between the two parallel odometers
     //TODO: Actually measure and tune this value
-    private final double trackWidth = 10;
+    private final double trackWidth = 5.5;
 
     //Distance of the perpendicular odometer from the center of the robot
     //TODO: Actually measure and tune this value
-    private final double forwardOffset = 10;
+    private final double forwardOffset = 7;
 
     //TODO: Actually measure and tune this value
-    private final double ticksToInch = 40;
+    private final double ticksToInch = 1235.45;
 
 
     //Calculates the Pose (XY Coordinates, and the Heading in Degrees)
@@ -41,9 +41,9 @@ public class OdometryCalc {
 
 
         //Get the wheel travel values (Inches) from encoder inputs
-        double dL = (robot.FLdrive().getCurrentPosition() - prevL)*ticksToInch;
-        double dR = (robot.FRdrive().getCurrentPosition() - prevR)*ticksToInch;
-        double dH = (robot.BLdrive().getCurrentPosition() - prevH)*ticksToInch;
+        double dL = -(robot.FRdrive().getCurrentPosition() - prevL)/ticksToInch;
+        double dR = (robot.BRdrive().getCurrentPosition() - prevR)/ticksToInch;
+        double dH = (robot.FLdrive().getCurrentPosition() - prevH)/ticksToInch;
 
         //Calculate the change in heading from previous heading using encoder data
         double dHead = prevHeading + (dL - dR)/trackWidth;

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.arcrobotics.ftclib.controller.PController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.kauailabs.navx.ftc.AHRS;
 import com.kauailabs.navx.ftc.navXPIDController;
@@ -8,8 +7,11 @@ import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class HardwareSoftware {
@@ -19,6 +21,8 @@ public class HardwareSoftware {
     DcMotorEx backRight     = null;
     DcMotorEx backLeft      = null;
     DcMotorEx frontLeft     = null;
+
+    private List<DcMotorEx> motors;
 
 
     public navXPIDController yawPIDController;
@@ -36,6 +40,8 @@ public class HardwareSoftware {
     private final double YAW_PID_P = 0.005;
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
+
+
 
     //Motor PIDF Controller Tuning Constants
     double kP = 1.3;
@@ -84,16 +90,24 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 //
 
         frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
         frontRight.setDirection(DcMotorEx.Direction.FORWARD);
         backLeft.setDirection(DcMotorEx.Direction.FORWARD);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
+
+        motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
 
 
 
@@ -128,6 +142,13 @@ public class HardwareSoftware {
     public AHRS gyro(){ return gyro;}
 
 
+    public void resetEncoders(){
+        FRdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        FLdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        BRdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        BLdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
     double ticksPerInch = 41.6666666;
 
     public int InchConvert(double inches) {
@@ -218,7 +239,8 @@ public class HardwareSoftware {
         // Now we don't have to declare the setpoint
         // in our calculate() method arguments.
         pidf.setSetPoint(target);
-        pidf.setTolerance(100, 1);
+        pidf.setTolerance(25, 1);
+
 
         // perform the control loop
                 /*
@@ -257,5 +279,7 @@ public class HardwareSoftware {
         FRdrive().setPower(0);
         BRdrive().setPower(0);
     }
+
+
 
 }

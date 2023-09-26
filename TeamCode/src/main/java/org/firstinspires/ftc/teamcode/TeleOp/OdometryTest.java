@@ -4,24 +4,29 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
+import org.firstinspires.ftc.teamcode.OdometryCalc;
 
 
-@TeleOp(name="Headless TeleOp Drive")
-public class headlessDriveTele extends OpMode {
+@TeleOp(name="Odometry Test")
+public class OdometryTest extends OpMode {
+
 
     HardwareSoftware robot = new HardwareSoftware();
 
+    OdometryCalc odo = new OdometryCalc();
 
-    double maxSpeed = 0.8;
+    double maxSpeed = 1.0;
     double minSpeed = 0.3;
     double speedMult = maxSpeed;
     boolean g1aDown = false;
 
     @Override
     public void init() {
-
         robot.init(hardwareMap);
         robot.resetEncoders();
+
+
+
 
 
     }
@@ -76,6 +81,18 @@ public class headlessDriveTele extends OpMode {
                 speedMult = maxSpeed;
             }
         }
+
+
+        double[] pose = odo.poseCalc(robot, 0,0,0,0);
+
+        telemetry.addData("Pose X: ", pose[0]);
+        telemetry.addData("Pose Y: ", pose[1]);
+        telemetry.addData("Heading: ", pose[2]);
+        telemetry.addData("Gyro Heading: ", robot.getHeading());
+        telemetry.addData("Left Encoder: ", robot.FRdrive().getCurrentPosition());
+        telemetry.addData("Right Encoder: ", robot.BRdrive().getCurrentPosition());
+        telemetry.addData("Middle Encoder: ", robot.FLdrive().getCurrentPosition());
+
 
     }
 }

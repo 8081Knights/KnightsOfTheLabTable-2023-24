@@ -15,20 +15,27 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous(name="RoadRunner Trajectory Test")
 public class roadRunnerTest extends LinearOpMode {
 
-    HardwareSoftware robot = new HardwareSoftware();
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
+        HardwareSoftware robot = new HardwareSoftware();
 
-        Trajectory test = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(10, 0), 0)
+        robot.init(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        Trajectory test1 = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(70, 0), 0)
+                .build();
+
+        Trajectory test2 = drive.trajectoryBuilder(test1.end())
+                .splineTo(new Vector2d(0, 0), 0)
                 .build();
 
 
         waitForStart();
 
-        drive.followTrajectory(test);
+        drive.followTrajectory(test1);
+        drive.followTrajectory(test2);
     }
 }

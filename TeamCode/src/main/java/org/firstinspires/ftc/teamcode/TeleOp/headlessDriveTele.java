@@ -50,10 +50,10 @@ public class headlessDriveTele extends OpMode {
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(driveTurn), 1);
 
         //Power Variables
-        double frontLeftPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
-        double backLeftPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
-        double frontRightPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
-        double backRightPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double frontLeftPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double backLeftPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
+        double frontRightPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
+        double backRightPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
 
         //Set Power to Motors
         robot.FRdrive().setPower(frontRightPower);
@@ -63,6 +63,9 @@ public class headlessDriveTele extends OpMode {
 
         if(gamepad1.right_trigger > 0.05){
             robot.intake().setPower(gamepad1.right_trigger*0.8);
+        }
+        else if(gamepad1.right_trigger < 0.05){
+            robot.intake().setPower(0);
         }
 
         if (gamepad1.a){

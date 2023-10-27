@@ -107,10 +107,10 @@ public class HardwareSoftware {
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 //
 
-        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
-        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
+        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
+        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
+        backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
         motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
 

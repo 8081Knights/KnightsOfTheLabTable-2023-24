@@ -109,10 +109,24 @@ public class HardwareSoftware {
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 //
 
-        frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+
+        motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        intake = hw.get(DcMotorEx.class, "intake");
+
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
 

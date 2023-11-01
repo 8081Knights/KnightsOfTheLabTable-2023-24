@@ -27,6 +27,8 @@ public class HardwareSoftware {
 
     DcMotorEx intake;
 
+    DcMotorEx linearSlide = null;
+
     DcMotorEx leftEncoder, rightEncoder, frontEncoder;
 
     private List<DcMotorEx> motors;

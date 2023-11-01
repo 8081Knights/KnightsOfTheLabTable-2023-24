@@ -15,6 +15,13 @@ public class nathanielHeadlessTele extends OpMode {
     double minSpeed = 0.3;
     double speedMult = maxSpeed;
 
+
+    //TODO: Tune
+    int maxSlideTarget = 1000;
+    int minSlideTarget = 10;
+    int slideTarget = minSlideTarget;
+    int slideVelocity = 1000;
+
     @Override
     public void init() {
 
@@ -61,6 +68,31 @@ public class nathanielHeadlessTele extends OpMode {
         robot.BRdrive().setPower(backRightPower);
         robot.BLdrive().setPower(backLeftPower);
 
+        if(gamepad1.right_trigger > 0.05){
+            robot.intake().setPower(gamepad1.right_trigger);
+        }
+        else if(gamepad1.right_trigger < 0.05){
+            robot.intake().setPower(0);
+        }
+
+        if(gamepad1.left_trigger > 0.05){
+            robot.intake().setPower(gamepad1.left_trigger);
+        }
+        else if(gamepad1.left_trigger < 0.05){
+            robot.intake().setPower(0);
+        }
+
+        if(gamepad1.dpad_up){
+            slideTarget = maxSlideTarget;
+        }
+        if(gamepad2.dpad_down){
+            slideTarget = minSlideTarget;
+        }
+
+
+
+
+
         if (gamepad1.a){
             g1aDown = true;
         }
@@ -74,6 +106,9 @@ public class nathanielHeadlessTele extends OpMode {
                 speedMult=maxSpeed;
             }
         }
+
+
+        robot.runSlides(slideTarget, slideVelocity);
 
     }
 }

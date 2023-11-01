@@ -27,6 +27,8 @@ public class HardwareSoftware {
 
     DcMotorEx intake;
 
+    DcMotorEx linearSlide = null;
+
     DcMotorEx leftEncoder, rightEncoder, frontEncoder;
 
     private List<DcMotorEx> motors;
@@ -188,6 +190,13 @@ public class HardwareSoftware {
         frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void runSlides(int target, int velocity){
+        linearSlide.setTargetPosition(target);
+        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        linearSlide.setVelocity(velocity);
+
     }
 
     public AHRS gyro(){ return gyro;}

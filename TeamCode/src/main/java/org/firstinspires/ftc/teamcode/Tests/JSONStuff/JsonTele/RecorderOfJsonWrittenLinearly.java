@@ -56,13 +56,20 @@ public class RecorderOfJsonWrittenLinearly extends LinearOpMode {
 
             Pose2d poseEstimate = drive.getPoseEstimate();
 
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-            telemetry.addData("Gyro Heading:", robot.getHeading());
 
             if (dataEntry == 100) {
                 dataEntry = 0;
+                switch (threadIterationset) {
+                    case 0:{
+                        runWriter[0].start();
+                    } case 1:{
+                        runWriter[1].start();
+                    } case 2:{
+                        runWriter[2].start();
+                    }
+                }
+
+
                 if (threadIterationset < 3) {
                     ++threadIterationset;
                 } else {

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -29,7 +30,8 @@ public class HardwareSoftware {
 
     DcMotorEx linearSlide = null;
 
-    DcMotorEx leftEncoder, rightEncoder, frontEncoder;
+    Servo pixelServo = null;
+
 
     private List<DcMotorEx> motors;
 
@@ -99,9 +101,9 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
-        leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
-        rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
-        frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
+        linearSlide = hw.get(DcMotorEx.class, "linearSlide");
+
+
 
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -143,6 +145,9 @@ public class HardwareSoftware {
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
+        pixelServo = hw.get(Servo.class, "pixelServo");
+
+
 
     }
 
@@ -176,21 +181,17 @@ public class HardwareSoftware {
         return intake;
     }
 
-    public DcMotorEx leftEncoder(){
-        return leftEncoder;
-    }
-    public DcMotorEx rightEncoder(){
-        return rightEncoder;
-    }
-    public DcMotorEx frontEncoder(){
-        return frontEncoder;
-    }
 
-    public void resetOdometry(){
-        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
+
+    public DcMotorEx linearSlide() {return linearSlide;}
+
+    public Servo pixelServo() {return pixelServo;}
+
+//    public void resetOdometry(){
+//        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//    }
 
     public void runSlides(int target, int velocity){
         linearSlide.setTargetPosition(target);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,12 +17,17 @@ public class nathanielHeadlessTele extends OpMode {
     double minSpeed = 0.3;
     double speedMult = maxSpeed;
 
+    boolean g1bDown = false;
+    boolean g1xDown = false;
+
 
     //TODO: Tune
-    int maxSlideTarget = 1000;
-    int minSlideTarget = 10;
+    int maxSlideTarget = -2000;
+    int minSlideTarget = -10;
     int slideTarget = minSlideTarget;
     int slideVelocity = 1000;
+
+
 
     @Override
     public void init() {
@@ -76,7 +83,7 @@ public class nathanielHeadlessTele extends OpMode {
         }
 
         if(gamepad1.left_trigger > 0.05){
-            robot.intake().setPower(gamepad1.left_trigger);
+            robot.intake().setPower(-gamepad1.left_trigger);
         }
         else if(gamepad1.left_trigger < 0.05){
             robot.intake().setPower(0);
@@ -84,12 +91,31 @@ public class nathanielHeadlessTele extends OpMode {
 
         if(gamepad1.dpad_up){
             slideTarget = maxSlideTarget;
+
         }
-        if(gamepad2.dpad_down){
+        else if(gamepad1.dpad_down){
             slideTarget = minSlideTarget;
+          //  robot.pixelServo().setPosition(0);
         }
 
+        if(gamepad1.x){
+            robot.pixelServo().setPosition(1);
+            g1xDown = true;
+        }
+        else if(!gamepad1.x && g1xDown) {
+            robot.pixelServo().setPosition(0.5);
 
+            g1xDown = false;
+        }
+        if(gamepad1.b){
+            robot.pixelServo().setPosition(0);
+            g1bDown = true;
+        }
+        else if(!gamepad1.b && g1bDown) {
+            robot.pixelServo().setPosition(0.5);
+
+            g1bDown = false;
+        }
 
 
 
@@ -109,6 +135,8 @@ public class nathanielHeadlessTele extends OpMode {
 
 
         robot.runSlides(slideTarget, slideVelocity);
+
+        telemetry.addData("Linear Slide Position: " , robot.linearSlide().getCurrentPosition());
 
     }
 }

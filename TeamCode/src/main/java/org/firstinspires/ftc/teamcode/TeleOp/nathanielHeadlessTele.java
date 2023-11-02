@@ -33,7 +33,7 @@ public class nathanielHeadlessTele extends OpMode {
 
         //Drive X and Y for Headless
         double gamepadXCoordinate = gamepad1.left_stick_x; //this simply gives our x value relative to the driver
-        double gamepadYCoordinate = -gamepad1.left_stick_y; //this simply gives our y vaue relative to the driver
+        double gamepadYCoordinate = -gamepad1.left_stick_y; //this simply gives our y value relative to the driver
 
 
 
@@ -50,10 +50,10 @@ public class nathanielHeadlessTele extends OpMode {
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(driveTurn), 1);
 
         //Power Variables
-        double frontLeftPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
-        double backLeftPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
-        double frontRightPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
-        double backRightPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double frontLeftPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double backLeftPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
+        double frontRightPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
+        double backRightPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
 
         //Set Power to Motors
         robot.FRdrive().setPower(frontRightPower);
@@ -69,6 +69,9 @@ public class nathanielHeadlessTele extends OpMode {
 
             if(speedMult==maxSpeed){
                 speedMult=minSpeed;
+            }
+            else{
+                speedMult=maxSpeed;
             }
         }
 

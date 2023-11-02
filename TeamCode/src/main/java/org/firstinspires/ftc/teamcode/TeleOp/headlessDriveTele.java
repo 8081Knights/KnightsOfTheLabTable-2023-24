@@ -5,17 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
 
-
-@TeleOp(name="Headless TeleOp Drive")
+@TeleOp(name = "HeadlessTele")
 public class headlessDriveTele extends OpMode {
 
     HardwareSoftware robot = new HardwareSoftware();
 
-
-    double maxSpeed = 1.0;
+    boolean g1aDown = false;
+    double maxSpeed = 1;
     double minSpeed = 0.3;
     double speedMult = maxSpeed;
-    boolean g1aDown = false;
 
     @Override
     public void init() {
@@ -35,7 +33,7 @@ public class headlessDriveTele extends OpMode {
 
         //Drive X and Y for Headless
         double gamepadXCoordinate = gamepad1.left_stick_x; //this simply gives our x value relative to the driver
-        double gamepadYCoordinate = -gamepad1.left_stick_y; //this simply gives our y vaue relative to the driver
+        double gamepadYCoordinate = -gamepad1.left_stick_y; //this simply gives our y value relative to the driver
 
 
 
@@ -52,10 +50,10 @@ public class headlessDriveTele extends OpMode {
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(driveTurn), 1);
 
         //Power Variables
-        double frontLeftPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
-        double backLeftPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
-        double frontRightPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
-        double backRightPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double frontLeftPower = ((rotY + rotX + driveTurn) / denominator)*speedMult;
+        double backLeftPower = ((rotY - rotX + driveTurn) / denominator)*speedMult;
+        double frontRightPower = ((rotY - rotX - driveTurn) / denominator)*speedMult;
+        double backRightPower = ((rotY + rotX - driveTurn) / denominator)*speedMult;
 
         //Set Power to Motors
         robot.FRdrive().setPower(frontRightPower);
@@ -63,18 +61,49 @@ public class headlessDriveTele extends OpMode {
         robot.BRdrive().setPower(backRightPower);
         robot.BLdrive().setPower(backLeftPower);
 
-        if(gamepad1.a){
+        if(gamepad1.right_trigger > 0.05){
+            robot.intake().setPower(gamepad1.right_trigger*0.8);
+        }
+        else if(gamepad1.right_trigger < 0.05){
+            robot.intake().setPower(0);
+        }
+
+        if (gamepad1.a){
             g1aDown = true;
         }
         if(!gamepad1.a && g1aDown){
             g1aDown = false;
+
             if(speedMult==maxSpeed){
                 speedMult=minSpeed;
             }
             else{
-                speedMult = maxSpeed;
+                speedMult=maxSpeed;
             }
         }
+
+        if(gamepad1.dpad_up){
+            robot.linearSlide.setPower();
+        }
+        else if(gamepad1.dpad_down){
+            robot.linearSlide.setPower();
+        }
+
+
+
+     /*   if(gamepad1.dpad_up){
+        //    robot.linearSlide.setPosition(third line);
+        }
+        else if(gamepad1.dpad_left){
+            //robot.linearSlide.setPosition(second line);
+        }
+        else if(gamepad1.dpad_down){
+            //robot.linearSlide.setPosition(first line);
+
+        }
+        // robot.setPower(0.7);
+
+      */
 
     }
 }

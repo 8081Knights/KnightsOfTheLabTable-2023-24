@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.arcrobotics.ftclib.controller.PController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.kauailabs.navx.ftc.AHRS;
 import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.Encoder;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class HardwareSoftware {
@@ -20,8 +25,16 @@ public class HardwareSoftware {
     DcMotorEx backLeft      = null;
     DcMotorEx frontLeft     = null;
 
+    DcMotorEx intake;
 
-    private navXPIDController yawPIDController;
+    DcMotorEx linearSlide = null;
+
+    DcMotorEx leftEncoder, rightEncoder, frontEncoder;
+
+    private List<DcMotorEx> motors;
+
+
+    public navXPIDController yawPIDController;
     navXPIDController.PIDResult yawPIDResult;
 
 
@@ -37,13 +50,15 @@ public class HardwareSoftware {
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
 
-    //Motor PIDF Controller Tuning Constants
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double kF = 0;
 
-    PIDFController pidf = new PIDFController(kP, kI, kD, kF);
+
+    //Motor PIDF Controller Tuning Constants
+    double kP = 1.3;
+    double kI = 0.0;
+    double kD = 0.015;
+    double kF = 0.0025;
+
+    public PIDFController pidf = new PIDFController(kP, kI, kD, kF);
 
 
     int maxVelocity = 2000;
@@ -84,16 +99,48 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
+        rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
+        frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
+
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 //
 
-        frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+
+        motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        intake = hw.get(DcMotorEx.class, "intake");
+
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        intake = hw.get(DcMotorEx.class, "intake");
+
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -125,9 +172,36 @@ public class HardwareSoftware {
         return backRight;
     }
 
+    public DcMotorEx intake(){
+        return intake;
+    }
+
+    public DcMotorEx leftEncoder(){
+        return leftEncoder;
+    }
+    public DcMotorEx rightEncoder(){
+        return rightEncoder;
+    }
+    public DcMotorEx frontEncoder(){
+        return frontEncoder;
+    }
+
+    public void resetOdometry(){
+        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
     public AHRS gyro(){ return gyro;}
 
 
+    public void resetEncoders(){
+        FRdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        FLdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        BRdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        BLdrive().setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
     double ticksPerInch = 41.6666666;
 
     public int InchConvert(double inches) {
@@ -147,7 +221,7 @@ public class HardwareSoftware {
         FLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FRdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FLdrive().setTargetPosition(-InchConvert(distance));
         FRdrive().setTargetPosition(InchConvert(distance));
@@ -199,36 +273,27 @@ public class HardwareSoftware {
 
     }
 
-    public void pidDrive(double speed, int target){
+    public void pidDrive(double timeOut, int target){
         // Calculates the output of the PIDF algorithm based on sensor
 // readings. Requires both the measured value
 // and the desired setpoint
-//        double FLoutput = pidf.calculate(
-//                FLdrive().getCurrentPosition(), target
-//        );
-//
-//        double FRoutput = pidf.calculate(
-//                FRdrive().getCurrentPosition(), target
-//        );
-//
-//        double BLoutput = pidf.calculate(
-//                BLdrive().getCurrentPosition(), target
-//        );
-//
-//        double BRoutput = pidf.calculate(
-//                BRdrive().getCurrentPosition(), target
-//        );
+
+        ElapsedTime timer = new ElapsedTime();
+
+        timer.reset();
+        timer.startTime();
 
         /*
          * A sample control loop for a motor
          */
-        PController pController = new PController(kP);
+
 
         // We set the setpoint here.
         // Now we don't have to declare the setpoint
         // in our calculate() method arguments.
-        pController.setSetPoint(target);
-        pController.setTolerance(5, 0.1);
+        pidf.setSetPoint(target);
+        pidf.setTolerance(25, 1);
+
 
         // perform the control loop
                 /*
@@ -236,26 +301,29 @@ public class HardwareSoftware {
                  * the desired setpoint within a specified tolerance
                  * range
                  */
-        while (!pController.atSetPoint()) {
-            double FLoutput = pController.calculate(
+        while (!pidf.atSetPoint() && timer.time(TimeUnit.MILLISECONDS) <= timeOut) {
+            double FLoutput = pidf.calculate(
                     FLdrive().getCurrentPosition()
             );
 
-            double FRoutput = pController.calculate(
+            double FRoutput = pidf.calculate(
                     FRdrive().getCurrentPosition()
             );
 
-            double BLoutput = pController.calculate(
+            double BLoutput = pidf.calculate(
                     BLdrive().getCurrentPosition()
             );
 
-            double BRoutput = pController.calculate(
+            double BRoutput = pidf.calculate(
                     BRdrive().getCurrentPosition()
             );
+
             FLdrive().setVelocity(FLoutput);
-            FRdrive().setVelocity(FRoutput);
             BLdrive().setVelocity(BLoutput);
+            FRdrive().setVelocity(FRoutput);
             BRdrive().setVelocity(BRoutput);
+
+
         }
 
 
@@ -264,5 +332,7 @@ public class HardwareSoftware {
         FRdrive().setPower(0);
         BRdrive().setPower(0);
     }
+
+
 
 }

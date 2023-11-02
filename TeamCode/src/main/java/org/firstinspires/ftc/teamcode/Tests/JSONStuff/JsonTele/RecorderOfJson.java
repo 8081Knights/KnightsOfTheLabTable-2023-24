@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.Tests.JSONStuff.JsonTele;
 
 import com.opencsv.CSVWriter;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -37,7 +35,7 @@ public class RecorderOfJson extends OpMode {
     double backLeftPower;
     double frontRightPower;
     double backRightPower;
-    float[][][] boxes = new float[3][100][7];
+    public static float[][][] boxes = new float[3][100][7];
     String filePath = "";
 
     @Override
@@ -179,6 +177,62 @@ public class RecorderOfJson extends OpMode {
         } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+        }
+    }
+
+    public class Writer implements Runnable {
+
+        int iterationNumber;
+        @Override
+        public void run() {
+            File file = new File(filePath);
+            try {
+                //Check to make sure destination file exists. If not create the destination file
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                // create FileWriter object with file as parameter
+                FileWriter outPutFile = new FileWriter(file, true);
+
+                // create CSVWriter object fileWriter object as parameter
+                CSVWriter writer = new CSVWriter(outPutFile);
+
+                //create reader to check if file already has a header
+                Scanner reader;
+                try {
+                    reader = new Scanner(new FileReader(filePath));
+                } catch (FileNotFoundException e) {
+                    throw e;
+                }
+
+                reader.useDelimiter("\n");
+
+                if (!reader.hasNext()) {
+                    // adding header to csv
+                    String[] header = {"timeStamp", "frontLeft Encoder", "frontRight Encoder", "backLeft Encoder", "backRight Encoder", "Gyro Heading"};
+                    writer.writeNext(header);
+                }
+
+                int localArrayLength = 0;
+                while (localArrayLength < 100) {
+                    writer.writeNext(new String[]{
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][1]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][2]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][3]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][4]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][5]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][6]),
+                            Float.toString(RecorderOfJson.boxes[iterationNumber][localArrayLength][7]),
+                    });
+                }
+
+                // closing writer connection
+                writer.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -62,10 +62,13 @@ public class RecorderOfJsonWrittenLinearly extends LinearOpMode {
                 switch (threadIterationset) {
                     case 0:{
                         runWriter[0].start();
+                        break;
                     } case 1:{
                         runWriter[1].start();
+                        break;
                     } case 2:{
                         runWriter[2].start();
+                        break;
                     }
                 }
 

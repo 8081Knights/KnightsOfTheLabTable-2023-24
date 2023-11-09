@@ -81,13 +81,13 @@ public class headlessDriveTele extends OpMode {
                 speedMult=maxSpeed;
             }
         }
-
-        if(gamepad1.dpad_up){
-            robot.linearSlide.setPower();
-        }
-        else if(gamepad1.dpad_down){
-            robot.linearSlide.setPower();
-        }
+//was messing up my auto un comment ou later
+      //  if(gamepad1.dpad_up){
+      //      robot.linearSlide.setPower();
+      //  }
+     //   else if(gamepad1.dpad_down){
+     //       robot.linearSlide.setPower();
+     //   }
 
 
 

@@ -99,9 +99,9 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
-        leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
-        rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
-        frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
+      leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
+      rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
+      frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
 
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);

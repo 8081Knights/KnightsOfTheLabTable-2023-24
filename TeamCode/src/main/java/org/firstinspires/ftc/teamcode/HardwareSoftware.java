@@ -144,6 +144,8 @@ public class HardwareSoftware {
 
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         pixelServo = hw.get(Servo.class, "pixelServo");
 

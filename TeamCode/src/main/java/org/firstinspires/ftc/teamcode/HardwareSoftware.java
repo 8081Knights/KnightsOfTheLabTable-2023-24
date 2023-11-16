@@ -29,7 +29,7 @@ public class HardwareSoftware {
 
     DcMotorEx linearSlide = null;
 
-    DcMotorEx leftEncoder, rightEncoder, frontEncoder;
+//    DcMotorEx leftEncoder, rightEncoder, frontEncoder;
 
     private List<DcMotorEx> motors;
 
@@ -99,9 +99,9 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
-      leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
-      rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
-      frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
+//      leftEncoder = hw.get(DcMotorEx.class, "leftOdo");
+//      rightEncoder = hw.get(DcMotorEx.class, "rightOdo");
+//      frontEncoder = hw.get(DcMotorEx.class, "frontOdo");
 
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -176,21 +176,21 @@ public class HardwareSoftware {
         return intake;
     }
 
-    public DcMotorEx leftEncoder(){
-        return leftEncoder;
-    }
-    public DcMotorEx rightEncoder(){
-        return rightEncoder;
-    }
-    public DcMotorEx frontEncoder(){
-        return frontEncoder;
-    }
+//    public DcMotorEx leftEncoder(){
+//        return leftEncoder;
+//    }
+//    public DcMotorEx rightEncoder(){
+//        return rightEncoder;
+//    }
+//    public DcMotorEx frontEncoder(){
+//        return frontEncoder;
+//    }
 
-    public void resetOdometry(){
-        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
+//    public void resetOdometry(){
+//        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//    }
 
     public AHRS gyro(){ return gyro;}
 

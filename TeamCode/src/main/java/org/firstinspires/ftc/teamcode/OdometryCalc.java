@@ -41,9 +41,9 @@ public class OdometryCalc {
 
 
         //Get the wheel travel values (Inches) from encoder inputs
-        double dL = -(robot.leftEncoder().getCurrentPosition() - prevL)/ticksToInch;
-        double dR = (robot.rightEncoder().getCurrentPosition() - prevR)/ticksToInch;
-        double dH = (robot.frontEncoder().getCurrentPosition() - prevH)/ticksToInch;
+        double dL = -(robot.FRdrive().getCurrentPosition() - prevL)/ticksToInch;
+        double dR = (robot.BRdrive().getCurrentPosition() - prevR)/ticksToInch;
+        double dH = (robot.FLdrive().getCurrentPosition() - prevH)/ticksToInch;
 
         //Calculate the change in heading from previous heading using encoder data
         double dHead = prevHeading + (dL - dR)/trackWidth;

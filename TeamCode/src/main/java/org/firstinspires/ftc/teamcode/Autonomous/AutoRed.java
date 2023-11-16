@@ -141,19 +141,19 @@ public class AutoRed extends LinearOpMode  {
             case "LEFT":
 
 
-                Pose2d start = new Pose2d(63, -58, Math.toRadians(180));
+                Pose2d start = new Pose2d(-33, 60, Math.toRadians(270));
 
                 drive.setPoseEstimate(start);
 
                 Trajectory traj1 = drive.trajectoryBuilder(start)
-                        .forward(27)
+                        .splineTo(new Vector2d(-6, 60), 0)
                         .build();
 
-               Trajectory turn1 = drive.trajectoryBuilder(new Pose2d (), false)
-                 .splineTo(new Vector2d(36, -58), Math.toRadians(90))
-                 .build();
+//               Trajectory turn1 = drive.trajectoryBuilder(new Pose2d (), false)
+//                 .splineTo(new Vector2d(-6, -60), Math.toRadians(90))
+//                 .build();
 
-                Trajectory traj2 = drive.trajectoryBuilder(turn1.end())
+                Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
                         .forward(-3)
                         .build();
 
@@ -171,10 +171,10 @@ public class AutoRed extends LinearOpMode  {
 
                 waitForStart();
                 drive.followTrajectory(traj1);
-                drive.followTrajectory(turn1);
-                drive.followTrajectory(traj2);
-                drive.followTrajectory(turn2);
-                drive.followTrajectory(traj3);
+//                drive.followTrajectory(turn1);
+//                drive.followTrajectory(traj2);
+//                drive.followTrajectory(turn2);
+//                drive.followTrajectory(traj3);
 
 
 

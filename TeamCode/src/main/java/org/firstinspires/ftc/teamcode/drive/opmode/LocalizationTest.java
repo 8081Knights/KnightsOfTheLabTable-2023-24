@@ -23,7 +23,7 @@ public class LocalizationTest extends LinearOpMode {
         HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
 
-        robot.resetOdometry();
+//        robot.resetOdometry();
 
 
 
@@ -49,9 +49,9 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
             telemetry.addData("Gyro Heading:", robot.getHeading());
-            telemetry.addData("Left Encoder: ", robot.leftEncoder().getCurrentPosition());
-            telemetry.addData("Right Encoder: ", robot.rightEncoder().getCurrentPosition());
-            telemetry.addData("Front Encoder: ", robot.frontEncoder().getCurrentPosition());
+//            telemetry.addData("Left Encoder: ", robot.leftEncoder().getCurrentPosition());
+//            telemetry.addData("Right Encoder: ", robot.rightEncoder().getCurrentPosition());
+//            telemetry.addData("Front Encoder: ", robot.frontEncoder().getCurrentPosition());
 
 
             telemetry.update();

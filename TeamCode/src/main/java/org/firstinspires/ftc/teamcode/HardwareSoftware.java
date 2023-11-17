@@ -6,9 +6,13 @@ import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,13 +20,22 @@ import java.util.concurrent.TimeUnit;
 
 public class HardwareSoftware {
 
-    private HardwareMap hw = null;
+    public HardwareMap hw = null;
     DcMotorEx frontRight    = null;
     DcMotorEx backRight     = null;
     DcMotorEx backLeft      = null;
     DcMotorEx frontLeft     = null;
 
-    private List<DcMotorEx> motors;
+    DcMotorEx intake;
+
+    DcMotorEx linearSlide = null;
+
+
+    Servo pixelServo = null;
+    Servo pixeldrop = null;
+
+
+    public List<DcMotorEx> motors;
 
 
     public navXPIDController yawPIDController;
@@ -90,16 +103,21 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
+
+        linearSlide = hw.get(DcMotorEx.class, "linearSlide");
+
+
+
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 //
 
-        frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
 
         motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
 
@@ -108,6 +126,33 @@ public class HardwareSoftware {
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
         }
+
+        intake = hw.get(DcMotorEx.class, "intake");
+
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motors = Arrays.asList(frontLeft, backLeft, backRight, frontRight);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        intake = hw.get(DcMotorEx.class, "intake");
+
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        pixelServo = hw.get(Servo.class, "pixelServo");
+
+        pixelServo = hw.get(Servo.class, "pixeldrop");
 
 
 
@@ -139,6 +184,27 @@ public class HardwareSoftware {
         return backRight;
     }
 
+    public DcMotorEx intake(){
+        return intake;
+    }
+
+    public Servo pixeldrop(){return pixeldrop;}
+
+
+
+    public DcMotorEx linearSlide() {return linearSlide;}
+
+    public Servo pixelServo() {return pixelServo;}
+
+
+
+    public void runSlides(int target, int velocity){
+        linearSlide.setTargetPosition(target);
+        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        linearSlide.setVelocity(velocity);
+
+    }
+
     public AHRS gyro(){ return gyro;}
 
 
@@ -168,7 +234,7 @@ public class HardwareSoftware {
         FLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FRdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRdrive().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FLdrive().setTargetPosition(-InchConvert(distance));
         FRdrive().setTargetPosition(InchConvert(distance));

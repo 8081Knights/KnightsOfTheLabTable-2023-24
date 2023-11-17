@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Tests.JSONStuff.JsonTele;
 
+import android.os.Environment;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.opencsv.CSVWriter;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,10 +20,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+
+@TeleOp(name = "Shmamuel")
 public class RecorderOfJsonWrittenLinearly extends LinearOpMode {
 
     public static double[][][] boxes = new double[3][100][5];
-    public static String filePath = "";
+
+    public static String filePath =  "/sdcard/FIRST/pathLogs.csv";
     ElapsedTime timeryy = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     public int threadIterationset = 0;
     int dataEntry = 0;
@@ -73,7 +80,7 @@ public class RecorderOfJsonWrittenLinearly extends LinearOpMode {
                 }
 
 
-                if (threadIterationset < 3) {
+                if (threadIterationset < 2) {
                     ++threadIterationset;
                 } else {
                     threadIterationset = 0;
@@ -123,7 +130,7 @@ public class RecorderOfJsonWrittenLinearly extends LinearOpMode {
 
                 if (!reader.hasNext()) {
                     // adding header to csv
-                    String[] header = {"EstimatedX", "EstimatedY","EncoderHeading", "Gyro Heading", "Timestamp"};
+                    String[] header = {"EstimatedX", "EstimatedY","EncoderHeading", "Gyro", "Timestamp"};
                     writer.writeNext(header);
                 }
 

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HardwareSoftware {
 
-    private HardwareMap hw = null;
+    public HardwareMap hw = null;
     DcMotorEx frontRight    = null;
     DcMotorEx backRight     = null;
     DcMotorEx backLeft      = null;
@@ -32,9 +32,10 @@ public class HardwareSoftware {
 
 
     Servo pixelServo = null;
+    Servo pixeldrop = null;
 
 
-    private List<DcMotorEx> motors;
+    public List<DcMotorEx> motors;
 
 
     public navXPIDController yawPIDController;
@@ -151,6 +152,8 @@ public class HardwareSoftware {
 
         pixelServo = hw.get(Servo.class, "pixelServo");
 
+        pixelServo = hw.get(Servo.class, "pixeldrop");
+
 
 
     }
@@ -185,11 +188,14 @@ public class HardwareSoftware {
         return intake;
     }
 
+    public Servo pixeldrop(){return pixeldrop;}
+
 
 
     public DcMotorEx linearSlide() {return linearSlide;}
 
     public Servo pixelServo() {return pixelServo;}
+
 
 
     public void runSlides(int target, int velocity){

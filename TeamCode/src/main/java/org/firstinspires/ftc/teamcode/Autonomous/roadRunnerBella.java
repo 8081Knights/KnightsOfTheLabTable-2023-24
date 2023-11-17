@@ -52,12 +52,12 @@ public class roadRunnerBella extends LinearOpMode {
 
 
         waitForStart();
-        robot.pixeldrop.setPosition(1);
+        robot.pixeldrop().setPosition(1);
         drive.followTrajectory(traj1);
         sleep(2000);
         drive.followTrajectory(traj2);
         drive.followTrajectory(turn1);
-        robot.pixeldrop.setPosition(0);
+        robot.pixeldrop().setPosition(0);
         drive.followTrajectory(traj3);
         drive.followTrajectory(traj4);
         sleep(2000);

@@ -150,9 +150,11 @@ public class HardwareSoftware {
         linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
+        pixeldrop = hw.get(Servo.class, "pixeldrop");
+
         pixelServo = hw.get(Servo.class, "pixelServo");
 
-        pixelServo = hw.get(Servo.class, "pixeldrop");
+        pixelServo.setPosition(0.5);
 
 
 

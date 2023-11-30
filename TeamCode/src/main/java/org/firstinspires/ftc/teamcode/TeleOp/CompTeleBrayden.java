@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
 
-@TeleOp(name = "nathanielHeadlessTele")
-public class nathanielHeadlessTele extends OpMode {
+@TeleOp(name = "2. Brayden Competition Tele")
+public class CompTeleBrayden extends OpMode {
 
     HardwareSoftware robot = new HardwareSoftware();
 
@@ -25,7 +25,7 @@ public class nathanielHeadlessTele extends OpMode {
     int maxSlideTarget = -2000;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
-    int slideVelocity = 1000;
+    int slideVelocity = 2000;
 
     double MAX_INTAKE_SPEED = 0.7;
 
@@ -43,7 +43,7 @@ public class nathanielHeadlessTele extends OpMode {
     public void loop() {
 
         //Turn Variable for Headless Robot Logic
-        double driveTurn = -gamepad1.right_stick_x;
+        double driveTurn = gamepad1.right_stick_x;
         //driveVertical = -gamepad1.right_stick_y;
         //driveHorizontal = gamepad1.right_stick_x;
 
@@ -98,7 +98,7 @@ public class nathanielHeadlessTele extends OpMode {
         }
         else if(gamepad1.dpad_down){
             slideTarget = minSlideTarget;
-          //  robot.pixelServo().setPosition(0);
+            //  robot.pixelServo().setPosition(0);
         }
 
         if(gamepad1.x){
@@ -137,7 +137,13 @@ public class nathanielHeadlessTele extends OpMode {
         }
 
 
-        robot.runSlides(slideTarget, slideVelocity);
+        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
+            robot.linearSlide().setPower(0);
+
+        }
+        else{
+            robot.runSlides(slideTarget, slideVelocity);
+        }
 
         telemetry.addData("Linear Slide Position: " , robot.linearSlide().getCurrentPosition());
 

@@ -62,10 +62,10 @@ public class CameraLogicRed extends OpenCvPipeline {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Low Color End
-        Scalar lowHsv = new Scalar(0, 45, 145); //0, 51, 153
+        Scalar lowHsv = new Scalar(0, 30, 90); //0, 51, 153
 
         //High Color End
-        Scalar highHsv = new Scalar(179, 171, 255);
+        Scalar highHsv = new Scalar(190, 190, 255); //179, 171, 255
 
         Core.inRange(mat, lowHsv, highHsv, mat);
 

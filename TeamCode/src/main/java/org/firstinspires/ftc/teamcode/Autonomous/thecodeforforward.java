@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.HardwareSoftware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
-@Autonomous(name="roadRunnerRedFar")
-public class roadRunnerBella extends LinearOpMode {
+@Autonomous(name="thecodeforforward")
+public class thecodeforforward extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,11 +25,16 @@ public class roadRunnerBella extends LinearOpMode {
         drive.setPoseEstimate(start);
 
         Trajectory traj1 = drive.trajectoryBuilder(start)
-                .splineTo(new Vector2d(-31, 33), Math.toRadians(0))
+                .splineTo(new Vector2d(-31, 33), Math.toRadians(270))
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .splineTo(new Vector2d(-31, 0), Math.toRadians(270))
+        Trajectory traj0 = drive.trajectoryBuilder(start)
+                .splineTo(new Vector2d(-19, 33), Math.toRadians(270))
+                .build();
+
+
+        Trajectory traj2 = drive.trajectoryBuilder(traj0.end())
+                .splineTo(new Vector2d(-19, 0), Math.toRadians(270))
                 .build();
 
         Trajectory turn1 = drive.trajectoryBuilder(traj2.end())
@@ -57,6 +62,7 @@ public class roadRunnerBella extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(2000);
         robot.pixeldrop().setPosition(1);
+        drive.followTrajectory(traj0);
         drive.followTrajectory(traj2);
         drive.followTrajectory(turn1);
         drive.followTrajectory(traj3);

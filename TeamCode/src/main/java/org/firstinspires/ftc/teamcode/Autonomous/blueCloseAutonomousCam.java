@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous(name="Red Far with Camera")
-public class redFarAutonomousCam extends LinearOpMode {
+@Autonomous(name="Blue Close with Camera")
+public class blueCloseAutonomousCam extends LinearOpMode {
 
     OpenCvWebcam cam;
 
@@ -30,7 +30,7 @@ public class redFarAutonomousCam extends LinearOpMode {
 
         cam = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
-        CameraLogicRed detector = new CameraLogicRed(telemetry);
+        CameraLogicBlue detector = new CameraLogicBlue(telemetry);
         cam.setPipeline(detector);
 
         cam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
@@ -47,7 +47,7 @@ public class redFarAutonomousCam extends LinearOpMode {
 
         });
 
-        Pose2d start = new Pose2d(-33, 60, Math.toRadians(270));
+        Pose2d start = new Pose2d(-81, -60, Math.toRadians(90));
 
         HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
@@ -55,35 +55,34 @@ public class redFarAutonomousCam extends LinearOpMode {
         drive.setPoseEstimate(start);
 
         Trajectory toSpikeMark = drive.trajectoryBuilder(start)
-                .splineTo(new Vector2d(-31, 33), Math.toRadians(270))
+                .splineTo(new Vector2d(-83, -33), Math.toRadians(90))
                 .build();
 
         //Camera Specific
         TrajectorySequence spikeLeft = drive.trajectorySequenceBuilder(toSpikeMark.end())
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(-90))
                 .build();
         TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
-                .turn(Math.toRadians(-90))
+                .turn(Math.toRadians(90))
                 .build();
 
         Trajectory spikeForward = drive.trajectoryBuilder(toSpikeMark.end())
-                .splineToConstantHeading(new Vector2d(-19, 33), Math.toRadians(270))
-                .splineTo(new Vector2d(-19, 0), Math.toRadians(270))
-                .splineTo(new Vector2d(-31, 0), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-19, -33), Math.toRadians(90))
+                .splineTo(new Vector2d(-71, 0), Math.toRadians(90))
+                .splineTo(new Vector2d(-83, 0), Math.toRadians(90))
                 .build();
 
-        Trajectory toGateLeft = drive.trajectoryBuilder(new Pose2d(-31, 33, Math.toRadians(0)))
-                .splineToConstantHeading(new Vector2d(-31, 15), Math.toRadians(0))
-                .splineTo(new Vector2d(-31, 0), Math.toRadians(270))
+        Trajectory toGateLeft = drive.trajectoryBuilder(new Pose2d(-31, -33, Math.toRadians(0)))
+                .splineToConstantHeading(new Vector2d(-83, -15), Math.toRadians(0))
+                .splineTo(new Vector2d(-83, 0), Math.toRadians(90))
                 .build();
 
         Trajectory toGateRight = drive.trajectoryBuilder(spikeRight.end())
-                .splineToConstantHeading(new Vector2d(-27, 15), Math.toRadians(180))
-                .splineTo(new Vector2d(-31, 0), Math.toRadians(270))
+                .splineTo(new Vector2d(-83, 0), Math.toRadians(90))
                 .build();
 
         Trajectory underGate = drive.trajectoryBuilder(new Pose2d(-31, 0, Math.toRadians(270)))
-                .splineTo(new Vector2d(-65, 0), Math.toRadians(180))
+                .splineTo(new Vector2d(-114, 0), Math.toRadians(180))
                 .build();
 
         Trajectory scoreZone = drive.trajectoryBuilder(underGate.end())
@@ -91,13 +90,13 @@ public class redFarAutonomousCam extends LinearOpMode {
                 .build();
 
         Trajectory backDrop = drive.trajectoryBuilder(scoreZone.end())
-                .splineTo(new Vector2d(-107, 33), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-113, 33), Math.toRadians(0))
+                .splineTo(new Vector2d(-107, -33), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-113, -33), Math.toRadians(0))
                 .build();
 
         Trajectory park = drive.trajectoryBuilder(backDrop.end())
-                .splineToConstantHeading(new Vector2d(-113, 60), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-116, 60), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-113, -60), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-116, -60), Math.toRadians(0))
                 .build();
 
         robot.pixeldrop().setPosition(1);
@@ -126,35 +125,32 @@ public class redFarAutonomousCam extends LinearOpMode {
                 telemetry.addLine("Going Left");
                 telemetry.update();
                 drive.followTrajectorySequence(spikeLeft);
-                robot.intake().setPower(-.5);
-                sleep(700);
-                robot.intake().setPower(0);
+                robot.pixeldrop().setPosition(0);
+                sleep(500);
                 drive.followTrajectory(toGateLeft);
-
                 break;
 
             case "RIGHT":
                 telemetry.addLine("Going Right");
+
                 telemetry.update();
                 drive.followTrajectorySequence(spikeRight);
-                robot.intake().setPower(-.7);
-                sleep(1000);
-                robot.intake().setPower(0);
+                robot.pixeldrop().setPosition(0);
+                sleep(500);
                 drive.followTrajectory(toGateRight);
                 break;
 
             case "MIDDLE":
                 telemetry.addLine("Going Forward");
                 telemetry.update();
-                robot.intake().setPower(-.4);
-                sleep(700);
-                robot.intake().setPower(0);
+                robot.pixeldrop().setPosition(0);
+                sleep(500);
                 drive.followTrajectory(spikeForward);
                 break;
 
         }
 
-       // robot.pixeldrop().setPosition(1);
+        robot.pixeldrop().setPosition(1);
         drive.followTrajectory(underGate);
         drive.followTrajectory(scoreZone);
         drive.followTrajectory(backDrop);

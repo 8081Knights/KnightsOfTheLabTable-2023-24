@@ -7,22 +7,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
 
-@TeleOp(name = "2. Brayden Competition Tele")
-public class CompTeleBrayden extends OpMode {
+@TeleOp(name = "3. Lumina Tele")
+public class LuminaTele extends OpMode {
 
     HardwareSoftware robot = new HardwareSoftware();
 
     boolean g1aDown = false;
     double maxSpeed = 1;
     double minSpeed = 0.3;
-    double speedMult = maxSpeed;
+    double speedMult = minSpeed;
 
     boolean g1bDown = false;
     boolean g1xDown = false;
 
 
     //TODO: Tune
-    int maxSlideTarget = -2200;
+    int maxSlideTarget = -2000;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
@@ -54,7 +54,7 @@ public class CompTeleBrayden extends OpMode {
 
 
         //the inverse tangent of opposite/adjacent gives us our gamepad degree
-        double robotDegree = Math.toRadians(robot.getHeading());
+        double robotDegree = 0;
 
 
         //Final X and Y for corrected driving (Field Centric Drive Logic)
@@ -92,60 +92,7 @@ public class CompTeleBrayden extends OpMode {
             robot.intake().setPower(0);
         }
 
-        if(gamepad1.dpad_up){
-            slideTarget = maxSlideTarget;
 
-        }
-        else if(gamepad1.dpad_down){
-            slideTarget = minSlideTarget;
-            //  robot.pixelServo().setPosition(0);
-        }
-
-        if(gamepad1.x){
-            robot.pixelServo().setPosition(1);
-            g1xDown = true;
-        }
-        else if(!gamepad1.x && g1xDown) {
-            robot.pixelServo().setPosition(0.5);
-
-            g1xDown = false;
-        }
-        if(gamepad1.b){
-            robot.pixelServo().setPosition(0);
-            g1bDown = true;
-        }
-        else if(!gamepad1.b && g1bDown) {
-            robot.pixelServo().setPosition(0.5);
-
-            g1bDown = false;
-        }
-
-
-
-        if (gamepad1.a){
-            g1aDown = true;
-        }
-        if(!gamepad1.a && g1aDown){
-            g1aDown = false;
-
-            if(speedMult==maxSpeed){
-                speedMult=minSpeed;
-            }
-            else{
-                speedMult=maxSpeed;
-            }
-        }
-
-
-        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
-            robot.linearSlide().setPower(0);
-
-        }
-        else{
-            robot.runSlides(slideTarget, slideVelocity);
-        }
-
-        telemetry.addData("Linear Slide Position: " , robot.linearSlide().getCurrentPosition());
 
     }
 }

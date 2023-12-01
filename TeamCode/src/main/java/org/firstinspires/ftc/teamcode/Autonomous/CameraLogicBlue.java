@@ -46,18 +46,18 @@ public class CameraLogicBlue extends OpenCvPipeline {
 
     //The other half of the Screen
     static final Rect RIGHT_ROI = new Rect(
-            new Point(200,20), // Max x value = 320
-            new Point(320, 100)
+            new Point(200,70), // Max x value = 320
+            new Point(320, 150)
     );
 
     // Not important
     static final Rect LEFT_ROI = new Rect(
             new Point(320,90), // Max x value = 320
-            new Point(75, 10)
+            new Point(75, 0)
     );
 
-    static double MIDDLE_THRESHOLD = 0.02;
-    static double RIGHT_THRESHOLD = 0.017;
+    static double MIDDLE_THRESHOLD = 0.2;
+    static double RIGHT_THRESHOLD = 0.2;
 
     @Override
     public Mat processFrame(Mat input){
@@ -82,27 +82,27 @@ public class CameraLogicBlue extends OpenCvPipeline {
         box.release();
 
         boolean box_Right = RightValue > RIGHT_THRESHOLD;
-        boolean box_Left = Value > MIDDLE_THRESHOLD;
+        boolean box_Middle = Value > MIDDLE_THRESHOLD;
 
 
 
-        if (box_Right && box_Left) {
+        if (box_Right && box_Middle) {
             // Position = POSITION.LEFT;
-            position = "LEFT";
-            telemetry.addData("Position",POSITION.LEFT);
+            position = "None";
+            telemetry.addData("Position",POSITION.NONE);
 
         } else if (box_Right) {
             //  Position = POSITION.MIDDLE;
-            position = "MIDDLE";
-            telemetry.addData("Position",POSITION.MIDDLE);
-
-        } else if (box_Left) {
-            // Position = POSITION.RIGHT;
             position = "RIGHT";
             telemetry.addData("Position",POSITION.RIGHT);
+
+        } else if (box_Middle) {
+            // Position = POSITION.RIGHT;
+            position = "MIDDLE";
+            telemetry.addData("Position",POSITION.MIDDLE);
         } else {
             //Position = POSITION.NONE;
-            position = "NONE";
+            position = "LEFT";
             telemetry.addData("Position",POSITION.NONE);
         }
 

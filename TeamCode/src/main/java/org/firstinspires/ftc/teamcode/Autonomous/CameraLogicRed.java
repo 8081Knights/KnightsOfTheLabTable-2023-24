@@ -37,14 +37,14 @@ public class CameraLogicRed extends OpenCvPipeline {
 
     // One half og the screen
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(10,70), // Max x value = 320
-            new Point(110, 150)
+            new Point(10,110), // Max x value = 320
+            new Point(110, 190)
     );
 
     //The other half of the Screen
     static final Rect RIGHT_ROI = new Rect(
-            new Point(170,70), // Max x value = 320
-            new Point(300, 150)
+            new Point(190,150), // Max x value = 320
+            new Point(300, 240)
     );
 
 //    // Not important
@@ -62,10 +62,10 @@ public class CameraLogicRed extends OpenCvPipeline {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Low Color End
-        Scalar lowHsv = new Scalar(0, 30, 90); //0, 51, 153
+        Scalar lowHsv = new Scalar(0, 60, 20); //0, 51, 153
 
         //High Color End
-        Scalar highHsv = new Scalar(190, 190, 255); //179, 171, 255
+        Scalar highHsv = new Scalar(255, 255, 255); //179, 171, 255
 
         Core.inRange(mat, lowHsv, highHsv, mat);
 

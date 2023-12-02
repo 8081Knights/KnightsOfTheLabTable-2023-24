@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous(name="Blue Far with Camera")
+@Autonomous(name="2. Blue Far with Camera Competition")
 public class blueFarAutonomousCam extends LinearOpMode {
 
     OpenCvWebcam cam;

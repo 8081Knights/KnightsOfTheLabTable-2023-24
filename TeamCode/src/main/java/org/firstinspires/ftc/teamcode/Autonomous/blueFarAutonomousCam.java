@@ -30,7 +30,7 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         cam = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
-        CameraLogicBlue detector = new CameraLogicBlue(telemetry);
+        CameraLogicRed detector = new CameraLogicRed(telemetry);
         cam.setPipeline(detector);
 
         cam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
@@ -47,12 +47,16 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         });
 
+
         Pose2d start = new Pose2d(-33, -60, Math.toRadians(90));
 
         HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
+        robot.intakeLock().setPosition(0);
 
         drive.setPoseEstimate(start);
+        telemetry.addLine("cam setup success!");
+        telemetry.update();
 
         Trajectory toSpikeMark = drive.trajectoryBuilder(start)
                 .splineTo(new Vector2d(-31, -33), Math.toRadians(90))
@@ -61,8 +65,8 @@ public class blueFarAutonomousCam extends LinearOpMode {
         //Camera Specific
         TrajectorySequence spikeLeft = drive.trajectorySequenceBuilder(toSpikeMark.end())
                 .turn(Math.toRadians(90))
-                .forward(4)
-                .back(2)
+                .forward(6)
+//                .back(2)
                 .build();
         TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
                 .turn(Math.toRadians(-90))
@@ -93,7 +97,7 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         Trajectory backDrop = drive.trajectoryBuilder(scoreZone.end())
                 .splineTo(new Vector2d(-107, -33), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-117, -33), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-121, -33), Math.toRadians(0))
                 .build();
 
         Trajectory park = drive.trajectoryBuilder(backDrop.end())
@@ -101,11 +105,14 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(-116, -60), Math.toRadians(90))
                 .build();
 
-        robot.pixeldrop().setPosition(1);
+        telemetry.addLine("Trajectory setup success!");
+        telemetry.update();
+
+//        robot.pixeldrop().setPosition(1);
 
         String pos = "";
 
-        while(!opModeIsActive()){
+        while(!opModeIsActive() && !isStopRequested()){
             pos = detector.position;
             telemetry.addData("Going: ", pos);
             telemetry.update();
@@ -128,8 +135,8 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 telemetry.update();
                 drive.followTrajectorySequence(spikeLeft);
 
-                robot.intake().setPower(-.65);
-                sleep(650);
+                robot.intake().setPower(-.5);
+                sleep(1000);
                 robot.intake().setPower(0);
                 drive.followTrajectory(toGateLeft);
                 break;
@@ -160,8 +167,17 @@ public class blueFarAutonomousCam extends LinearOpMode {
         drive.followTrajectory(underGate);
         drive.followTrajectory(scoreZone);
         drive.followTrajectory(backDrop);
-        sleep(2000);
+        robot.runSlides(-2200, 2000);
+        sleep(1500);
+        robot.pixelServo().setPosition(1);
+        sleep(500);
+        robot.pixelServo().setPosition(0.5);
+        robot.runSlides(-25, 2000);
+        sleep(1500);
         drive.followTrajectory(park);
+
+        robot.intakeLock().setPosition(1);
+        sleep(5000);
 
     }
 }

@@ -33,6 +33,7 @@ public class HardwareSoftware {
 
     Servo pixelServo = null;
     Servo pixeldrop = null;
+    Servo intakeLock;
 
 
     public List<DcMotorEx> motors;
@@ -154,6 +155,8 @@ public class HardwareSoftware {
 
         pixelServo = hw.get(Servo.class, "pixelServo");
 
+        intakeLock = hw.get(Servo.class, "intakeLock");
+
         pixelServo.setPosition(0.5);
 
 
@@ -197,6 +200,9 @@ public class HardwareSoftware {
     public DcMotorEx linearSlide() {return linearSlide;}
 
     public Servo pixelServo() {return pixelServo;}
+    public Servo intakeLock(){
+        return intakeLock;
+    }
 
 
 

@@ -40,14 +40,14 @@ public class CameraLogicBlue extends OpenCvPipeline {
 
     // One half oF the screen
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(60,70), // Max x value = 320
+            new Point(0,70), // Max x value = 320
             new Point(150, 150)
     );
 
     //The other half of the Screen
     static final Rect RIGHT_ROI = new Rect(
             new Point(200,70), // Max x value = 320
-            new Point(320, 150)
+            new Point(320, 240)
     );
 
     // Not important
@@ -56,8 +56,8 @@ public class CameraLogicBlue extends OpenCvPipeline {
             new Point(75, 0)
     );
 
-    static double MIDDLE_THRESHOLD = 0.2;
-    static double RIGHT_THRESHOLD = 0.2;
+    static double MIDDLE_THRESHOLD = 0.15;
+    static double RIGHT_THRESHOLD = 0.15;
 
     @Override
     public Mat processFrame(Mat input){

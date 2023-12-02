@@ -19,6 +19,8 @@ public class CompTeleKeaton extends OpMode {
 
     boolean g1bDown = false;
     boolean g1xDown = false;
+    boolean g2aDown = false;
+
 
 
     //TODO: Tune
@@ -134,6 +136,13 @@ public class CompTeleKeaton extends OpMode {
             else{
                 speedMult=maxSpeed;
             }
+        }
+        if (gamepad2.a){
+            g2aDown = true;
+        }
+        if(!gamepad2.a && g2aDown){
+            g2aDown = false;
+            robot.gyro().zeroYaw();
         }
 
 

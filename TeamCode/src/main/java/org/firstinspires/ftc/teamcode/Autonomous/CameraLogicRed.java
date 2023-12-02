@@ -37,14 +37,14 @@ public class CameraLogicRed extends OpenCvPipeline {
 
     // One half og the screen
     static final Rect MIDDLE_ROI = new Rect(
-            new Point(10,110), // Max x value = 320
-            new Point(110, 190)
+            new Point(0,100), // Max x value = 320
+            new Point(150, 180)
     );
 
     //The other half of the Screen
     static final Rect RIGHT_ROI = new Rect(
-            new Point(190,150), // Max x value = 320
-            new Point(300, 240)
+            new Point(210,130), // Max x value = 320
+            new Point(320, 240)
     );
 
 //    // Not important

@@ -34,6 +34,8 @@ public class HardwareSoftware {
     Servo pixelServo = null;
     Servo pixeldrop = null;
     Servo intakeLock;
+    Servo droneLaunch = null;
+    Servo backDropServo;
 
 
     public List<DcMotorEx> motors;
@@ -153,9 +155,14 @@ public class HardwareSoftware {
 
         pixeldrop = hw.get(Servo.class, "pixeldrop");
 
-        pixelServo = hw.get(Servo.class, "pixelServo");
+        backDropServo = hw.get(Servo.class, "backDropServo");
+
+        pixelServo = hw.get(Servo.class, "delivery");
 
         intakeLock = hw.get(Servo.class, "intakeLock");
+
+        droneLaunch = hw.get(Servo.class, "droneLaunch");
+
 
         pixelServo.setPosition(0.5);
 
@@ -194,6 +201,8 @@ public class HardwareSoftware {
     }
 
     public Servo pixeldrop(){return pixeldrop;}
+    public Servo dronelunch() {return droneLaunch;}
+    public Servo backDropServo(){return backDropServo;}
 
 
 

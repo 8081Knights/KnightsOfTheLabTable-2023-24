@@ -18,8 +18,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous(name="2. Blue Far with Camera Competition")
-public class blueFarAutonomousCam extends LinearOpMode {
+@Autonomous(name="4. Brophy blue comp auto")
+public class BrophyBlueCompAuto extends LinearOpMode {
 
     OpenCvWebcam cam;
 
@@ -157,14 +157,11 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         String pos = "LEFT";
 //
-        while(!opModeIsActive() && !isStopRequested()){
-            pos = detector.position;
-            telemetry.addData("Going: ", pos);
-            telemetry.update();
-        }
+
 
         waitForStart();
 
+        sleep(5000);
 //
         drive.followTrajectory(toSpikeMark);
         switch(pos){
@@ -233,7 +230,7 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         }
 
-     //   robot.pixeldrop().setPosition(1);
+        //   robot.pixeldrop().setPosition(1);
 
         robot.runSlides(-2200, 2000);
         sleep(1700);
@@ -242,8 +239,8 @@ public class blueFarAutonomousCam extends LinearOpMode {
         robot.pixelServo().setPosition(0.5);
         robot.runSlides(-25, 2000);
         sleep(1500);
-        drive.followTrajectory(park);
-        drive.turn(Math.toRadians(90));
+//        drive.followTrajectory(park);
+//        drive.turn(Math.toRadians(90));
 
         robot.intakeLock().setPosition(1);
         sleep(5000);

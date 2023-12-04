@@ -4,6 +4,8 @@ import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
 
@@ -20,10 +22,17 @@ public class CompTeleBrayden extends OpMode {
     boolean g1bDown = false;
     boolean g1xDown = false;
     boolean g2aDown = false;
+    boolean g2yDown = false;
+    boolean g2xDown = false;
+    boolean g2bDown = false;
+
+    boolean runslide = true;
+
+
 
 
     //TODO: Tune
-    int maxSlideTarget = -2200;
+    int maxSlideTarget = -2000;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
@@ -36,6 +45,8 @@ public class CompTeleBrayden extends OpMode {
     public void init() {
 
         robot.init(hardwareMap);
+
+        robot.dronelunch().setPosition(1);
 
 
     }
@@ -144,16 +155,100 @@ public class CompTeleBrayden extends OpMode {
             robot.gyro().zeroYaw();
         }
 
+        if (gamepad2.y){
+            g2yDown = true;
+        }
+        if(!gamepad2.y && g2yDown){
+            g2yDown = false;
+            if(robot.dronelunch().getPosition() == 0){
+                robot.dronelunch().setPosition(1 );
+            }
+            else{
+                robot.dronelunch().setPosition(0);
+            }
+        }
 
-        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
-            robot.linearSlide().setPower(0);
+        if (gamepad2.x){
+            g2xDown = true;
+        }
+        if(!gamepad2.x && g2xDown){
+            g2xDown = false;
+
+
+            if(runslide){
+                runslide = false;
+                robot.linearSlide().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                telemetry.addLine("Stopped Slides");
+                telemetry.update();
+            }
+            else{
+                runslide = true;
+                robot.linearSlide().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                telemetry.addLine("Running Slides");
+                telemetry.update();
+
+            }
+        }
+
+
+        if (gamepad2.b){
+            g2bDown = true;
+        }
+        if(!gamepad2.b && g2bDown){
+            g2bDown = false;
+
+
+            robot.linearSlide().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            telemetry.addLine("Reset SLides");
+            telemetry.update();
+        }
+
+
+
+
+        if(runslide){
+            if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
+                robot.linearSlide().setPower(0);
+
+            }
+            else{
+                robot.runSlides(slideTarget, slideVelocity);
+            }
 
         }
         else{
-            robot.runSlides(slideTarget, slideVelocity);
-        }
 
-        telemetry.addData("Linear Slide Position: " , robot.linearSlide().getCurrentPosition());
+            if(gamepad2.right_trigger > 0.1) {
+                robot.linearSlide().setPower(gamepad2.right_trigger*0.5);
+                telemetry.addLine("Running Slides Downward without Encoder");
+                telemetry.update();
+
+            }
+            else{
+                robot.linearSlide().setPower(0);
+            }
+
+        }
+//        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50 && runslide){
+//            robot.linearSlide().setPower(0);
+//            telemetry.addLine("Slides at Rest");
+//            telemetry.update();
+//
+//        }
+//        else if(Math.abs(robot.linearSlide().getCurrentPosition()) > 100 && Math.abs(slideTarget) > 50 && runslide){
+//            robot.runSlides(slideTarget, slideVelocity);
+//
+//            telemetry.addLine("Running SLidess");
+//            telemetry.update();
+//        }
+
+
+
+
+
+
+//        telemetry.addData("Linear Slide Position: " , robot.linearSlide().getCurrentPosition());
 
     }
 }

@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @Disabled
 //Looks for Yellow Box thing i think
-public class CameraLogicBlue extends OpenCvPipeline {
+public class CameraLogicBlueRGB extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
     OpenCvCamera cam;
@@ -33,7 +33,7 @@ public class CameraLogicBlue extends OpenCvPipeline {
 
     public POSITION Position;
 
-    public CameraLogicBlue(Telemetry t) { telemetry = t; }
+    public CameraLogicBlueRGB(Telemetry t) { telemetry = t; }
     boolean viewportPaused;
 
     // Regions of interests -------------------------//
@@ -63,15 +63,15 @@ public class CameraLogicBlue extends OpenCvPipeline {
     public Mat processFrame(Mat input){
 
         //Converting RGB image to HSV in order to easily look for color ranges
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+//        Imgproc.cvtColor(input, mat, Imgproc.COLOR_BGR2RGB);
 
         //Low Color End
-        Scalar lowHsv = new Scalar(110, 50, 70); //35, 51, 51
+        Scalar lowHsv = new Scalar(90, 130, 220); //35, 51, 51
 
         //High Color End
-        Scalar highHsv = new Scalar(150, 255, 255); //163, 255, 255
+        Scalar highHsv = new Scalar(184, 219, 255); //163, 255, 255
 
-        Core.inRange(mat, lowHsv, highHsv, mat);
+        Core.inRange(input, lowHsv, highHsv, mat);
 
         Mat box = mat.submat(MIDDLE_ROI);
         Mat box2 = mat.submat(RIGHT_ROI);

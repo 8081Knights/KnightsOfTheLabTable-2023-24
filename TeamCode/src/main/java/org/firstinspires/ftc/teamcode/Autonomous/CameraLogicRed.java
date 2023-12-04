@@ -53,7 +53,7 @@ public class CameraLogicRed extends OpenCvPipeline {
 //            new Point(75, 20)
 //    );
 
-    static double PERCENT_COLOR_THRESHOLD = 0.1;
+    static double PERCENT_COLOR_THRESHOLD = 0.2;
 
     @Override
     public Mat processFrame(Mat input){
@@ -62,7 +62,7 @@ public class CameraLogicRed extends OpenCvPipeline {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Low Color End
-        Scalar lowHsv = new Scalar(0, 60, 20); //0, 51, 153
+        Scalar lowHsv = new Scalar(0, 150, 100); //0, 51, 153
 
         //High Color End
         Scalar highHsv = new Scalar(255, 255, 255); //179, 171, 255

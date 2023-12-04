@@ -170,10 +170,16 @@ public class CompRedFarCamera extends LinearOpMode {
         drive.followTrajectory(toSpikeMark);
         switch(pos){
             default:
-                robot.pixeldrop().setPosition(0);
-                sleep(500);
-                drive.followTrajectorySequence(underHang);
-                drive.followTrajectory(spikeForward);
+                telemetry.addLine("Going Left");
+                telemetry.update();
+                drive.followTrajectorySequence(spikeLeft);
+
+                robot.intake().setPower(-.5);
+                sleep(1000);
+                robot.intake().setPower(0);
+                drive.followTrajectorySequence(scoredSpikeLeft);
+                drive.followTrajectory(toGateLeft);
+                drive.followTrajectory(backDrop);
                 break;
 
             case "LEFT":

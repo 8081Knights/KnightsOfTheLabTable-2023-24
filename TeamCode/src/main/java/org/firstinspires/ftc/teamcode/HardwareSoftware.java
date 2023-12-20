@@ -38,6 +38,7 @@ public class HardwareSoftware {
     Servo backDropServo;
 
 
+
     public List<DcMotorEx> motors;
 
 
@@ -165,7 +166,7 @@ public class HardwareSoftware {
 
 
         pixelServo.setPosition(0.5);
-
+        intakeLock.setPosition(1);
 
 
     }

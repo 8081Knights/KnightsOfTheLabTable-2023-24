@@ -154,7 +154,7 @@ public class HardwareSoftware {
         linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        pixeldrop = hw.get(Servo.class, "pixeldrop");
+        pixeldrop = hw.get(Servo.class, "pixelServo");
 
         backDropServo = hw.get(Servo.class, "backDropServo");
 
@@ -167,6 +167,7 @@ public class HardwareSoftware {
 
         pixelServo.setPosition(0.5);
         intakeLock.setPosition(1);
+        pixeldrop.setPosition(0);
 
 
     }

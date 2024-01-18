@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -22,6 +23,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class blueFarAutonomousCam extends LinearOpMode {
 
     OpenCvWebcam cam;
+
+    double backDropServoHIGH = 0.2;
+    double backDropServoLOW = 0.725;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -54,6 +58,7 @@ public class blueFarAutonomousCam extends LinearOpMode {
         HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
         robot.intakeLock().setPosition(0.2);
+        robot.pixeldrop().setPosition(1);
 
 
         Pose2d start = new Pose2d(-33, -60, Math.toRadians(90));
@@ -153,7 +158,8 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -13, Math.toRadians(90)))
                 .splineTo(new Vector2d(-117, -13), Math.toRadians(0))
-                .splineTo(new Vector2d(-122, -33), Math.toRadians(0))
+                .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
+
                // .splineToConstantHeading(new Vector2d(-110, -33), Math.toRadians(0))
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
@@ -173,13 +179,29 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
         x++;
 
-        //TODO: Change start back to backDrop.end()
-        Trajectory park = drive.trajectoryBuilder(new Pose2d(-116, -33, 0))
-                .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(-124, -10), Math.toRadians(0))
+//        //TODO: Change start back to backDrop.end()
+//        Trajectory park = drive.trajectoryBuilder(new Pose2d(-116, -33, 0))
+//                .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
+//                .splineToConstantHeading(new Vector2d(-124, -10), Math.toRadians(0))
+//                .build();
+
+        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(backDrop.end())
+                .strafeRight(6)
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
+                .build();
+        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDrop.end())
+                .strafeRight(8)
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
+                .build();
+        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(backDrop.end())
+                .strafeRight(13)
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
 
-        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-116, -33, 0))
+        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-115, -33, 0))
                 .back(6)
                 .strafeLeft(20)
                 .build();
@@ -189,7 +211,9 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
 //        robot.pixeldrop().setPosition(1);
 
-        String pos = "MIDDLE";
+        String pos = "LEFT";
+
+        robot.backDropServo().setPosition(backDropServoHIGH);
 //
 //        while(!opModeIsActive() && !isStopRequested()){
 //            pos = detector.position;
@@ -219,10 +243,9 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 telemetry.addLine("Going Left");
                 telemetry.update();
                 drive.followTrajectorySequence(spikeLeft);
+                robot.pixeldrop().setPosition(0);
 
-                robot.intake().setPower(-.5);
-                sleep(1000);
-                robot.intake().setPower(0);
+                sleep(500);
                 drive.followTrajectorySequence(scoredSpikeLeft);
                 drive.followTrajectory(toGateLeft);
                 drive.followTrajectory(backDrop);
@@ -234,13 +257,12 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 telemetry.update();
                 robot.intakeLock().setPosition(0.2);
                 drive.followTrajectorySequence(spikeLeft);
-                robot.intake().setPower(-.6);
-                sleep(1500);
-                robot.intake().setPower(0);
+                robot.pixeldrop().setPosition(0);
+                sleep(500);
                 drive.followTrajectorySequence(scoredSpikeLeft);
                 drive.followTrajectory(toGateLeft);
                 drive.followTrajectory(backDrop);
-                robot.intakeLock().setPosition(0);
+                drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
 
             case "RIGHT":
@@ -248,12 +270,12 @@ public class blueFarAutonomousCam extends LinearOpMode {
 
                 telemetry.update();
                 drive.followTrajectorySequence(spikeRight);
-                robot.intake().setPower(-.6);
-                sleep(650);
-                robot.intake().setPower(0);
+                robot.pixeldrop().setPosition(0);
+                sleep(500);
                 drive.followTrajectorySequence(scoredSpikeRight);
                 drive.followTrajectory(toGateRight);
                 drive.followTrajectory(backDrop);
+                drive.followTrajectorySequence(backDropLineUpRight);
                 break;
 
 
@@ -261,30 +283,36 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 telemetry.addLine("Going Forward");
                 telemetry.update();
                 drive.followTrajectory(spikeForward);
-                robot.intake().setPower(-.45);
+                robot.pixeldrop().setPosition(0);
                 sleep(500);
-                robot.intake().setPower(0);
                 drive.followTrajectory(scoredSpikeForward);
                 drive.followTrajectory(toGateForward);
                 drive.followTrajectory(backDrop);
+                drive.followTrajectorySequence(backDropLineUpMiddle);
                 break;
 
         }
 
      //   robot.pixeldrop().setPosition(1);
 
-        robot.runSlides(-1800, 2000);
-        sleep(1700);
-        robot.pixelServo().setPosition(1);
-        sleep(500);
-        robot.pixelServo().setPosition(0.5);
-        robot.runSlides(-25, 2000);
+//        robot.runSlides(-1800, 2000);
+//        sleep(1700);
+//        robot.pixelServo().setPosition(1);
+//        sleep(500);
+//        robot.pixelServo().setPosition(0.5);
+//        robot.runSlides(-25, 2000);
+
+
+
+
+        robot.backDropServo().setPosition(backDropServoLOW);
         sleep(1500);
 //        drive.followTrajectory(park);
         drive.followTrajectorySequence(parkProper);
-        drive.turn(Math.toRadians(90));
+        drive.turn(Math.toRadians(93));
 
         robot.intakeLock().setPosition(1);
+        robot.backDropServo().setPosition(backDropServoHIGH);
         sleep(5000);
 
     }

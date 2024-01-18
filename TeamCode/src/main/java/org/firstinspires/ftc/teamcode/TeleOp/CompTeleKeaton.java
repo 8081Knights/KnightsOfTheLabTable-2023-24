@@ -36,6 +36,7 @@ public class CompTeleKeaton extends OpMode {
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
+    int slideMin = 50;
 
     double MAX_INTAKE_SPEED = 0.7;
 
@@ -208,7 +209,7 @@ public class CompTeleKeaton extends OpMode {
 
 
         if(runslide){
-            if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
+            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < minSlideTarget){
                 robot.linearSlide().setPower(0);
 
             }

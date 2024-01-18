@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -18,13 +19,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous(name=" Blue Close with Camera Competition")
-public class blueCloseAutonomousCam extends LinearOpMode {
+@Autonomous(name="2. Red Close with Camera Competition")
+public class redCloseAutonomousCam extends LinearOpMode {
 
     OpenCvWebcam cam;
-
-    double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.725;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,15 +55,14 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
         robot.intakeLock().setPosition(0.2);
-        robot.pixeldrop().setPosition(1);
 
 
-        Pose2d start = new Pose2d(-33, -109, Math.toRadians(90));
+        Pose2d start = new Pose2d(-33, 109, Math.toRadians(270));
 
         drive.setPoseEstimate(start);
 
         Trajectory toSpikeMark = drive.trajectoryBuilder(start)
-                .splineTo(new Vector2d(-35, -79), Math.toRadians(90))
+                .splineTo(new Vector2d(-33, 79), Math.toRadians(270))
                 .build();
 //
         int x = 1;
@@ -75,44 +72,28 @@ public class blueCloseAutonomousCam extends LinearOpMode {
 
         //Camera Specific
         TrajectorySequence spikeLeft = drive.trajectorySequenceBuilder(toSpikeMark.end())
-//                //.strafeRight(2)
-//                .turn(Math.toRadians(90))
-//                .forward(3)
-//                //.back(2)
-//                .build();
-                .turn(Math.toRadians(-90))
+                //.strafeRight(2)
+                .turn(Math.toRadians(90))
                 .forward(3)
+                //.back(2)
                 .build();
         TrajectorySequence scoredSpikeLeft = drive.trajectorySequenceBuilder(spikeLeft.end())
-//                .back(4)
-//                // .turn(Math.toRadians(-90))
-////                .back(2)
-                // .back(10)
-                .back(39)
-                .strafeRight(3)
-                // .turn(Math.toRadians(90))
+                .back(4)
+                // .turn(Math.toRadians(-90))
+//                .back(2)
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
         x++;
         TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
-                .strafeRight(2)
-                .turn(Math.toRadians(90))
-                // .forward(4)
-                //.back(1)
+                // .strafeLeft(4)
+                .turn(Math.toRadians(-90))
+                .back(1)
                 .build();
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
-//                .back(3)
-//                .strafeLeft(7)
-//                // .turn(Math.toRadians(90))
-//                .build();
-//                .back(10)
-                .strafeLeft(24)
-                .turn(Math.toRadians(-180))
-                .back(30)
-                .strafeLeft(30)
-                // .turn(Math.toRadians(-90))
-//                .back(2)
+                .back(3)
+                .strafeLeft(7)
+                // .turn(Math.toRadians(90))
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
@@ -131,18 +112,10 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         Trajectory scoredSpikeForward = drive.trajectoryBuilder(spikeForward.end())
                 // .splineToConstantHeading(new Vector2d(0, -5), 180)
                 //.back(4)
-                .splineToConstantHeading(new Vector2d(-33, -91), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-14, -83), Math.toRadians(90))
-                // .forward(18)
+                .splineToConstantHeading(new Vector2d(-33, 91), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-14, 83), Math.toRadians(270))
+                //.forward(28)
                 //.splineTo(new Vector2d(-25, -4), Math.toRadians(90))
-                .build();
-
-        TrajectorySequence scoredSpikeForwardProper = drive.trajectorySequenceBuilder(spikeForward.end())
-                // .strafeLeft(24)
-                // .forward(24)
-                .turn(Math.toRadians(-90))
-                .back(36)
-                // .back(24)
                 .build();
 
 //        Trajectory spikeForward = drive.trajectoryBuilder(toSpikeMark.end())
@@ -157,14 +130,14 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         x++;
 
         Trajectory toGateLeft = drive.trajectoryBuilder(scoredSpikeLeft.end())
-                .splineTo(new Vector2d(-35, -13), Math.toRadians(90))
+                .splineTo(new Vector2d(-35,100 ), Math.toRadians(270))
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
         x++;
 
         Trajectory toGateRight = drive.trajectoryBuilder(scoredSpikeRight.end())
-                .splineTo(new Vector2d(-20, 0), Math.toRadians(90))
+                .splineTo(new Vector2d(-35, 100), Math.toRadians(270))
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
@@ -172,63 +145,61 @@ public class blueCloseAutonomousCam extends LinearOpMode {
 
 
         Trajectory toGateForward = drive.trajectoryBuilder(scoredSpikeForward.end())
-                .splineTo(new Vector2d(-14, 0), Math.toRadians(90))
+                .splineTo(new Vector2d(-14, 100), Math.toRadians(270))
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
         x++;
 
 
-        Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -83, Math.toRadians(90)))
-                .splineTo(new Vector2d(-109, -15), Math.toRadians(0))
-                .splineTo(new Vector2d(-114, -40), Math.toRadians(0))
+        Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -13, Math.toRadians(270)))
+                .splineTo(new Vector2d(-117, 100), Math.toRadians(0))
+                .splineTo(new Vector2d(-123, 100), Math.toRadians(0))
+
                 // .splineToConstantHeading(new Vector2d(-110, -33), Math.toRadians(0))
                 .build();
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
 
-        TrajectorySequence backDropProper = drive.trajectorySequenceBuilder(new Pose2d(-31, -8, Math.toRadians(90)))
-                .strafeRight(85)
-                .back(26)
-                .turn(Math.toRadians(90))
-                .build();
 
-        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeRight(2)
+
+
+
+
+
+
+
+
+
+
+
+        x++;
+
+//        //TODO: Change start back to backDrop.end()
+//        Trajectory park = drive.trajectoryBuilder(new Pose2d(-116, -33, 0))
+//                .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
+//                .splineToConstantHeading(new Vector2d(-124, -10), Math.toRadians(0))
+//                .build();
+
+        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(backDrop.end())
+                .strafeRight(6)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
-        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
-                .strafeRight(10)
+        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDrop.end())
+                .strafeRight(8)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
-        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
+        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(backDrop.end())
                 .strafeRight(13)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
 
-        telemetry.addData("Trajectory setup success: ", x);
-        telemetry.update();
-
-
-
-
-
-
-
-
-
-
-
-
-
-        x++;
-
-
-        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-111, -20, 0))
-
-                .strafeRight(4)
-//                .back(6)
+        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-115, -33, 0))
+                .back(6)
+                .strafeLeft(20)
                 .build();
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
@@ -237,14 +208,14 @@ public class blueCloseAutonomousCam extends LinearOpMode {
 //        robot.pixeldrop().setPosition(1);
 
         String pos = "MIDDLE";
+
+        robot.backDropServo().setPosition(0.2);
 //
 //        while(!opModeIsActive() && !isStopRequested()){
 //            pos = detector.position;
 //            telemetry.addData("Going: ", pos);
 //            telemetry.update();
 //        }
-        robot.backDropServo().setPosition(backDropServoHIGH);
-
 
         waitForStart();
 
@@ -260,7 +231,7 @@ public class blueCloseAutonomousCam extends LinearOpMode {
                 sleep(1500);
                 robot.intake().setPower(0);
                 drive.followTrajectorySequence(scoredSpikeLeft);
-                // drive.followTrajectory(toGateLeft);
+                drive.followTrajectory(toGateLeft);
                 drive.followTrajectory(backDrop);
                 break;
 
@@ -273,9 +244,8 @@ public class blueCloseAutonomousCam extends LinearOpMode {
                 sleep(1000);
                 robot.intake().setPower(0);
                 drive.followTrajectorySequence(scoredSpikeLeft);
-                // drive.followTrajectory(toGateLeft);
-//                drive.followTrajectory(backDrop);
-                drive.followTrajectorySequence(backDropLineUpLeft);
+                drive.followTrajectory(toGateLeft);
+                drive.followTrajectory(backDrop);
                 break;
 
             case "LEFT":
@@ -284,15 +254,13 @@ public class blueCloseAutonomousCam extends LinearOpMode {
                 telemetry.update();
                 robot.intakeLock().setPosition(0.2);
                 drive.followTrajectorySequence(spikeLeft);
-//                robot.intake().setPower(-.45);
-                robot.pixeldrop().setPosition(0);
-                sleep(500);
+                robot.intake().setPower(-.6);
+                sleep(1500);
+                robot.intake().setPower(0);
                 drive.followTrajectorySequence(scoredSpikeLeft);
-//                drive.followTrajectory(toGateLeft);
-                // drive.followTrajectorySequence(backDropProper);
-                robot.intakeLock().setPosition(0);
-                  drive.followTrajectorySequence(backDropLineUpLeft);
-
+                drive.followTrajectory(toGateLeft);
+                drive.followTrajectory(backDrop);
+                drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
 
             case "RIGHT":
@@ -300,13 +268,13 @@ public class blueCloseAutonomousCam extends LinearOpMode {
 
                 telemetry.update();
                 drive.followTrajectorySequence(spikeRight);
-                robot.pixeldrop().setPosition(0);
-                sleep(500);
+                robot.intake().setPower(-.6);
+                sleep(650);
+                robot.intake().setPower(0);
                 drive.followTrajectorySequence(scoredSpikeRight);
-////                drive.followTrajectory(toGateRight);
-//                drive.followTrajectorySequence(backDropProper);
+                drive.followTrajectory(toGateRight);
+                drive.followTrajectory(backDrop);
                 drive.followTrajectorySequence(backDropLineUpRight);
-
                 break;
 
 
@@ -314,13 +282,13 @@ public class blueCloseAutonomousCam extends LinearOpMode {
                 telemetry.addLine("Going Forward");
                 telemetry.update();
                 drive.followTrajectory(spikeForward);
-                robot.pixeldrop().setPosition(0);
+                robot.intake().setPower(-.45);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeForwardProper);
-////                drive.followTrajectory(toGateForward);
-//                drive.followTrajectorySequence(backDropProper);
+                robot.intake().setPower(0);
+                drive.followTrajectory(scoredSpikeForward);
+                drive.followTrajectory(toGateForward);
+                drive.followTrajectory(backDrop);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
-
                 break;
 
         }
@@ -333,17 +301,18 @@ public class blueCloseAutonomousCam extends LinearOpMode {
 //        sleep(500);
 //        robot.pixelServo().setPosition(0.5);
 //        robot.runSlides(-25, 2000);
-//        sleep(1500);
 
-        robot.backDropServo().setPosition(backDropServoLOW);
+
+
+
+        robot.backDropServo().setPosition(1);
         sleep(1500);
-        robot.backDropServo().setPosition(backDropServoHIGH);
-
 //        drive.followTrajectory(park);
         drive.followTrajectorySequence(parkProper);
-        drive.turn(Math.toRadians(90));
+        drive.turn(Math.toRadians(93));
 
         robot.intakeLock().setPosition(1);
+        robot.backDropServo().setPosition(0);
         sleep(5000);
 
     }

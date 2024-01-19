@@ -6,13 +6,22 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
+
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(name = "1. Keaton Competition Tele")
 public class CompTeleKeaton extends OpMode {
 
     HardwareSoftware robot = new HardwareSoftware();
+
+    ElapsedTime timer = new ElapsedTime();
+
+
+    //TODO: Change to 90 seconds
+    double timeToEnd = 20;
 
     boolean g1aDown = false;
     double maxSpeed = 1;
@@ -48,6 +57,9 @@ public class CompTeleKeaton extends OpMode {
         robot.init(hardwareMap);
 
         robot.dronelunch().setPosition(1);
+
+        timer.reset();
+        timer.startTime();
 
 
     }
@@ -169,6 +181,11 @@ public class CompTeleKeaton extends OpMode {
             }
         }
 
+        if((gamepad2.right_bumper || gamepad2.left_bumper) && timer.time(TimeUnit.SECONDS) >= timeToEnd){
+            robot.hangRelease().setPosition(0);
+        }
+
+
         if (gamepad2.x){
             g2xDown = true;
         }
@@ -205,7 +222,7 @@ public class CompTeleKeaton extends OpMode {
             telemetry.update();
         }
 
-        
+
 
 
 
@@ -218,6 +235,16 @@ public class CompTeleKeaton extends OpMode {
             else{
                 robot.runSlides(slideTarget, slideVelocity);
             }
+            if(gamepad2.right_trigger > 0.1 && timer.time(TimeUnit.SECONDS) >= timeToEnd) {
+                robot.hang(gamepad2.right_trigger*0.5);
+                telemetry.addLine("HANGING!!");
+                telemetry.update();
+
+            }
+            else{
+                robot.hang(0);
+            }
+
 
         }
         else{

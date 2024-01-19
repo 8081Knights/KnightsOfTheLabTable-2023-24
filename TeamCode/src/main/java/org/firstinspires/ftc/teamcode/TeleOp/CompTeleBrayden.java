@@ -6,13 +6,22 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
+
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(name = "2. Brayden Competition Tele")
 public class CompTeleBrayden extends OpMode {
 
     HardwareSoftware robot = new HardwareSoftware();
+
+    ElapsedTime timer = new ElapsedTime();
+
+
+    //TODO: Change to 90 seconds
+    double timeToEnd = 20;
 
     boolean g1aDown = false;
     double maxSpeed = 1;
@@ -36,6 +45,7 @@ public class CompTeleBrayden extends OpMode {
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
+    int slideMin = 50;
 
     double MAX_INTAKE_SPEED = 0.7;
 
@@ -47,6 +57,9 @@ public class CompTeleBrayden extends OpMode {
         robot.init(hardwareMap);
 
         robot.dronelunch().setPosition(1);
+
+        timer.reset();
+        timer.startTime();
 
 
     }
@@ -168,6 +181,11 @@ public class CompTeleBrayden extends OpMode {
             }
         }
 
+        if((gamepad2.right_bumper || gamepad2.left_bumper) && timer.time(TimeUnit.SECONDS) >= timeToEnd){
+            robot.hangRelease().setPosition(0);
+        }
+
+
         if (gamepad2.x){
             g2xDown = true;
         }
@@ -207,14 +225,26 @@ public class CompTeleBrayden extends OpMode {
 
 
 
+
+
         if(runslide){
-            if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50){
+            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < minSlideTarget){
                 robot.linearSlide().setPower(0);
 
             }
             else{
                 robot.runSlides(slideTarget, slideVelocity);
             }
+            if(gamepad2.right_trigger > 0.1 && timer.time(TimeUnit.SECONDS) >= timeToEnd) {
+                robot.hang(gamepad2.right_trigger*0.5);
+                telemetry.addLine("HANGING!!");
+                telemetry.update();
+
+            }
+            else{
+                robot.hang(0);
+            }
+
 
         }
         else{

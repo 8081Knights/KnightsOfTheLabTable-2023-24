@@ -39,6 +39,7 @@ public class HardwareSoftware {
     Servo intakeLock;
     Servo droneLaunch = null;
     Servo backDropServo;
+    Servo hangRelease;
 
 
 
@@ -173,10 +174,13 @@ public class HardwareSoftware {
 
         droneLaunch = hw.get(Servo.class, "droneLaunch");
 
+        hangRelease = hw.get(Servo.class, "hangRelease");
+
 
         pixelServo.setPosition(0.5);
         intakeLock.setPosition(1);
         pixeldrop.setPosition(0);
+        hangRelease.setPosition(0.5);
 
 
     }
@@ -228,6 +232,7 @@ public class HardwareSoftware {
     public Servo intakeLock(){
         return intakeLock;
     }
+    public Servo hangRelease(){return hangRelease;}
 
 
 

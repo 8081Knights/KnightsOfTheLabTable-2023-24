@@ -15,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "2. Red Far with Camera Competition")
+@Autonomous(name = "4. Red Far with Camera Competition")
 public class RedFar extends LinearOpMode {
 
     OpenCvWebcam cam;
@@ -70,6 +70,7 @@ public class RedFar extends LinearOpMode {
         TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
                 .strafeRight(2)
                 .turn(Math.toRadians(-90))
+                .forward(2)
                 .build();
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
                 .back(10)
@@ -91,9 +92,9 @@ public class RedFar extends LinearOpMode {
 
 
         TrajectorySequence backDropProper = drive.trajectorySequenceBuilder(new Pose2d(-31, 8, Math.toRadians(270)))
-                .strafeRight(85)
-                .back(26)
                 .turn(Math.toRadians(90))
+                .back(85)
+                .strafeLeft(26)
                 .build();
 
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(backDropProper.end())
@@ -103,23 +104,29 @@ public class RedFar extends LinearOpMode {
                 .build();
 
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDropProper.end())
-                .strafeRight(10)
-                .forward(-6, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeRight(9)
+                .forward(-4, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .back(2)
                 .build();
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(backDropProper.end())
-                .strafeRight(13)
+                .strafeRight(9)
+                //was 13
                 .forward(-6, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-109, 18, 0))
+        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpLeft.end())
+                .addTemporalMarker(0.5, () ->{
+                    robot.backDropServo().setPosition(backDropServoHIGH);
+                })
+                .forward(6)
                 .strafeRight(4)
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);
-        String pos = "LEFT";
+        String pos = "RIGHT";
         waitForStart();
 
         drive.followTrajectory(toSpikeMark);

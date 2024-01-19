@@ -26,6 +26,9 @@ public class HardwareSoftware {
     DcMotorEx backLeft      = null;
     DcMotorEx frontLeft     = null;
 
+    DcMotor hangLeft;
+    DcMotor hangRight;
+
     DcMotorEx intake;
 
     DcMotorEx linearSlide = null;
@@ -107,6 +110,10 @@ public class HardwareSoftware {
         backLeft = hw.get(DcMotorEx.class, "BLdrive");
         backRight = hw.get(DcMotorEx.class, "BRdrive");
 
+        hangLeft = hw.get(DcMotor.class, "hangLeft");
+        hangRight = hw.get(DcMotor.class, "hangRight");
+
+
 
         linearSlide = hw.get(DcMotorEx.class, "linearSlide");
 
@@ -116,6 +123,8 @@ public class HardwareSoftware {
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+
 //
 
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
@@ -202,9 +211,14 @@ public class HardwareSoftware {
         return intake;
     }
 
+    public DcMotor hangLeft(){return hangLeft;}
+    public DcMotor hangRight(){return hangRight;}
+
+
     public Servo pixeldrop(){return pixeldrop;}
     public Servo dronelunch() {return droneLaunch;}
     public Servo backDropServo(){return backDropServo;}
+
 
 
 
@@ -222,6 +236,11 @@ public class HardwareSoftware {
         linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         linearSlide.setVelocity(velocity);
 
+    }
+
+    public void hang(double power){
+        hangLeft.setPower(power);
+        hangRight.setPower(power);
     }
 
     public AHRS gyro(){ return gyro;}

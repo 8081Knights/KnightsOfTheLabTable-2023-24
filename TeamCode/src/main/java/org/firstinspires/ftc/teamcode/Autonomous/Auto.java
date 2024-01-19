@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.HardwareSoftware;
 
 import java.util.concurrent.TimeUnit;
 
+@Disabled
 @Autonomous(name = "Auto", group = "Pushbot")
 public class Auto extends LinearOpMode {
     public static HardwareSoftware robot = new HardwareSoftware();

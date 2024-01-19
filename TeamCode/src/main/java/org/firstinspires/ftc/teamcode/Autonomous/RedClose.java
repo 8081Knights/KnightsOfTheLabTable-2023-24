@@ -17,13 +17,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Red Close with Camera Competition")
+@Autonomous(name = "3. Red Close with Camera Competition")
 public class RedClose extends LinearOpMode {
 
     OpenCvWebcam cam;
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.9;
+    double backDropServoLOW = 0.98;
     double driveTrainSlowedVelocity = 20;
 
     @Override
@@ -100,24 +100,28 @@ public class RedClose extends LinearOpMode {
                 .strafeLeft(15)
                 .turn(Math.toRadians(180))
                 .back(36)
-                .forward(1)
-                .strafeLeft(19)
+               // .forward(1)
+                .strafeLeft(17)
                 .back(2)
                 .build();
 
         //Trajectory to deliver Forward Spike Mark
         Trajectory spikeForward = drive.trajectoryBuilder(toSpikeMark.end())
                 .back(2)
+               // .strafeLeft(7)
+               // .strafeLeft(7)
                 .build();
 
         //TRUNCATED TO: scoredSpikeForwardProper
-        Trajectory scoredSpikeForward = drive.trajectoryBuilder(spikeForward.end())
-                .splineToConstantHeading(new Vector2d(-33, 91), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(-14, 83), Math.toRadians(270))
-                .build();
+      //  Trajectory scoredSpikeForward = drive.trajectoryBuilder(spikeForward.end())
+                //.splineToConstantHeading(new Vector2d(-33, 91), Math.toRadians(270))
+               // .splineToConstantHeading(new Vector2d(-14, 83), Math.toRadians(270))
+               // .strafeLeft(7)
+              //  .build();
 
         //Trajectory to backdrop from scored Spike Mark
         TrajectorySequence scoredSpikeForwardProper = drive.trajectorySequenceBuilder(spikeForward.end())
+                .back(2)
                 .turn(Math.toRadians(90))
                 .back(36)
                 .build();
@@ -133,7 +137,7 @@ public class RedClose extends LinearOpMode {
 
         //Trajectory to line up Forward backdrop delivery
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeRight(10)
+               // .strafeRight(10)
                 .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -147,13 +151,19 @@ public class RedClose extends LinearOpMode {
                 .build();
 
         //Trajectory to park
-        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-111, 20, 0))
+        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpMiddle.end())
+                .addTemporalMarker(0.5, () -> {
+                    robot.backDropServo().setPosition(backDropServoHIGH);
+                })
+                .forward(6)
+                .turn(Math.toRadians(-90))
                 .strafeRight(4)
+                .back(20)
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);
 
-        String pos = "LEFT";
+        String pos = "MIDDLE";
 
         waitForStart();
 
@@ -167,6 +177,7 @@ public class RedClose extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeLeft);
+              //  drive.followTrajectorySequence(scoredSpikeForward);
                 robot.intakeLock().setPosition(0);
                 drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
@@ -197,7 +208,7 @@ public class RedClose extends LinearOpMode {
                 telemetry.addLine("Going Forward");
                 telemetry.update();
                 drive.followTrajectory(spikeForward);
-                robot.pixeldrop().setPosition(1);
+                robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeForwardProper);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
@@ -205,10 +216,9 @@ public class RedClose extends LinearOpMode {
         }
 
         robot.backDropServo().setPosition(backDropServoLOW);
-        sleep(2000);
-        robot.backDropServo().setPosition(backDropServoHIGH);
+        sleep(1500);
+
         drive.followTrajectorySequence(parkProper);
-        drive.turn(Math.toRadians(-90));
         robot.intakeLock().setPosition(1);
         sleep(5000);
     }

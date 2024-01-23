@@ -34,12 +34,12 @@ public class TestTensorflowBleuFar extends LinearOpMode {
             "BlueTeamProp",
             "RedTeamProp",
     };
-    VisionPortal visionPortal;
     private TfodProcessor tfod;
+    VisionPortal visionPortal;
 
 
 
-    OpenCvWebcam cam;
+//    OpenCvWebcam cam;
     double backDropServoHIGH = 0.2;
     double backDropServoLOW = 0.725;
 
@@ -49,6 +49,36 @@ public class TestTensorflowBleuFar extends LinearOpMode {
 
         //Declare Drive Train Handler
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+
+        initTfod();
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        boolean isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
+        int recognisedsounter = 0;
+        while (!isRecognised && recognisedsounter <=5) {
+            currentRecognitions = tfod.getRecognitions();
+            isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
+            ++recognisedsounter;
+            telemetry.addData("RunLoop? ", currentRecognitions.size());
+            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+            telemetry.update();
+        }
+        String pos = "MIDDLE";
+        boolean isDefault = true;
+        if (currentRecognitions.size() > 0){
+            if (currentRecognitions.get(0).getRight() < 400) {
+                pos = "LEFT";
+            } else if (currentRecognitions.get(0).getRight() < 640) {
+                pos = "MIDDLE";
+            } else {
+                pos = "RIGHT";
+            }
+            isDefault = false;
+        }
+        telemetry.addData("posotion: ", pos);
+        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+        telemetry.addData("deyects?", currentRecognitions.size());
+        telemetry.update();
 
         /*//Grab Camera Hardware Map
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
@@ -171,31 +201,7 @@ public class TestTensorflowBleuFar extends LinearOpMode {
 
         // Tensorflow Initialization
 
-        initTfod();
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        boolean isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
-        int recognisedsounter = 0;
-        while (isRecognised || recognisedsounter <=5) {
-            currentRecognitions = tfod.getRecognitions();
-            isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
-            ++recognisedsounter;
-        }
-        String pos = "MIDDLE";
-        boolean isDefault = true;
-        if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
-                pos = "MIDDLE";
-            } else {
-                pos = "RIGHT";
-            }
-            isDefault = false;
-        }
-        telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.update();
+
         waitForStart();
 
         //Start of Program
@@ -271,13 +277,13 @@ public class TestTensorflowBleuFar extends LinearOpMode {
                 // will load the default model for the season. To define a custom model to load,
                 // choose one of the following:
                 //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
+                //   Use setModelFadileName() if you have downloaded a custom team model to the Robot Controller.
                 //.setModelAssetName(TFOD_MODEL_ASSET)
                 .setModelFileName(TFOD_MODEL_FILE)
 
                 // The following default settings are available to un-comment and edit as needed to
                 // set parameters for custom models.
-                //.setModelLabels(LABELS)
+                .setModelLabels(LABELS)
                 //.setIsModelTensorFlow2(true)
                 //.setIsModelQuantized(true)
                 //.setModelInputSize(300)

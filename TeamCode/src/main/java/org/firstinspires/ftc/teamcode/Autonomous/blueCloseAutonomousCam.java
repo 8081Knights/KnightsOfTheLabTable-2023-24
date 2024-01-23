@@ -192,7 +192,7 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         telemetry.update();
 
         //Camera Detection Storage Variable
-        String pos = "RIGHT";
+        String pos = "LEFT";
 
 
         waitForStart();

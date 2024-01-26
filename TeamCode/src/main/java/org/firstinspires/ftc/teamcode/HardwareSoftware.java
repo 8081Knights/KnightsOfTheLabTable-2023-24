@@ -7,6 +7,7 @@ import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -41,7 +42,7 @@ public class HardwareSoftware {
     Servo backDropServo;
     Servo hangRelease;
 
-
+    DigitalChannel bumperTouch;
 
     public List<DcMotorEx> motors;
 
@@ -176,6 +177,10 @@ public class HardwareSoftware {
 
         hangRelease = hw.get(Servo.class, "hangRelease");
 
+        bumperTouch = hw.get(DigitalChannel.class, "bumperTouch");
+
+        bumperTouch.setMode(DigitalChannel.Mode.INPUT);
+
 
         pixelServo.setPosition(0.5);
         intakeLock.setPosition(1);
@@ -222,6 +227,8 @@ public class HardwareSoftware {
     public Servo pixeldrop(){return pixeldrop;}
     public Servo dronelunch() {return droneLaunch;}
     public Servo backDropServo(){return backDropServo;}
+
+    public DigitalChannel bumperTouch(){return bumperTouch;}
 
 
 

@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
+//import org.openftc.easyopencv.OpenCvCamera;
+//import org.openftc.easyopencv.OpenCvCameraFactory;
+//import org.openftc.easyopencv.OpenCvCameraRotation;
+//import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 
@@ -51,34 +51,6 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        initTfod();
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        boolean isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
-        int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=5) {
-            currentRecognitions = tfod.getRecognitions();
-            isRecognised = (currentRecognitions.size() == 0) ? (false) : (true);
-            ++recognisedsounter;
-            telemetry.addData("RunLoop? ", currentRecognitions.size());
-            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-            telemetry.update();
-        }
-        String pos = "MIDDLE";
-        boolean isDefault = true;
-        if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
-                pos = "MIDDLE";
-            } else {
-                pos = "RIGHT";
-            }
-            isDefault = false;
-        }
-        telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.update();
 
         /*//Grab Camera Hardware Map
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
@@ -202,7 +174,40 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         // Tensorflow Initialization
 
 
+        initTfod();
+
         waitForStart();
+
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        boolean isRecognised = (currentRecognitions.size() != 0);
+        int recognisedsounter = 0;
+        while (!isRecognised && recognisedsounter <=150) {
+            currentRecognitions = tfod.getRecognitions();
+            isRecognised = (currentRecognitions.size() != 0);
+            ++recognisedsounter;
+            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+            telemetry.update();
+            sleep(20);
+        }
+        String pos = "MIDDLE";
+        boolean isDefault = true;
+        if (currentRecognitions.size() > 0){
+            if (currentRecognitions.get(0).getRight() < 400) {
+                pos = "LEFT";
+            } else if (currentRecognitions.get(0).getRight() < 640) {
+                pos = "MIDDLE";
+            } else {
+                pos = "RIGHT";
+            }
+            isDefault = false;
+        }
+        telemetry.addData("Did run loop? ", recognisedsounter);
+        telemetry.addData("recognised", isRecognised);
+        telemetry.addData("posotion: ", pos);
+        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+        telemetry.addData("deyects?", currentRecognitions.size());
+        telemetry.update();
 
         //Start of Program
         drive.followTrajectory(toSpikeMark);

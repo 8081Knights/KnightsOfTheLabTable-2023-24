@@ -9,25 +9,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-//import org.firstinspires.ftc.teamcode.Autonomous.CameraLogicBlue;
+import org.firstinspires.ftc.teamcode.Autonomous.CameraLogicBlue;
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-//import org.openftc.easyopencv.OpenCvCamera;
-//import org.openftc.easyopencv.OpenCvCameraFactory;
-//import org.openftc.easyopencv.OpenCvCameraRotation;
-//import org.openftc.easyopencv.OpenCvWebcam;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 
-@Autonomous(name = "FINAL #2: BlueFar")
-public class TestTensorflowBleuFar extends LinearOpMode {
+@Autonomous(name = "FINAL #1: BlueClose")
+public class BlueCloeTensrTest extends LinearOpMode {
 
 
-// THIS IS REAL
+    double backDropServoHIGH = 0.2;
+    double backDropServoLOW = 0.77;
+
+
     final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
     final String[] LABELS = {
@@ -37,46 +40,11 @@ public class TestTensorflowBleuFar extends LinearOpMode {
     private TfodProcessor tfod;
     VisionPortal visionPortal;
 
-
-
-//    OpenCvWebcam cam;
-    double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.725;
-
     @Override
     public void runOpMode() throws InterruptedException {
 
-
-        //Declare Drive Train Handler
+        //DriveTrain Initialization
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-
-
-        /*//Grab Camera Hardware Map
-        int cameraMonitorViewId = hardwareMap.appContext.getResources()
-                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        cam = OpenCvCameraFactory.getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
-        CameraLogicBlue detector = new CameraLogicBlue(telemetry);
-        cam.setPipeline(detector);
-
-        //Set up camera permissions
-        cam.setMillisecondsPermissionTimeout(2500);
-        cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                cam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });*/
-
-
-
-
-
 
 
         //Hardware Initialization
@@ -86,98 +54,140 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         robot.pixeldrop().setPosition(1);
         robot.backDropServo().setPosition(backDropServoHIGH);
 
-        //Processing Paths
-        Pose2d start = new Pose2d(-33, -60, Math.toRadians(90));
+        //Set start positioning estimate
+        Pose2d start = new Pose2d(-33, -109, Math.toRadians(90));
         drive.setPoseEstimate(start);
 
+
         Trajectory toSpikeMark = drive.trajectoryBuilder(start)
-                .splineTo(new Vector2d(-35, -30), Math.toRadians(90))
+                .splineTo(new Vector2d(-35, -79), Math.toRadians(90))
                 .build();
 
+        int x = 1;
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+
+        //Camera Specific
+        TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
+                .turn(Math.toRadians(-90))
+                .forward(3)
+                .build();
+
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
+                .back(39)
+                .strafeRight(3)
+                .build();
+
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
         TrajectorySequence spikeLeft = drive.trajectorySequenceBuilder(toSpikeMark.end())
+                .strafeRight(2)
                 .turn(Math.toRadians(90))
                 .forward(4)
                 .build();
 
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
         TrajectorySequence scoredSpikeLeft = drive.trajectorySequenceBuilder(spikeLeft.end())
-                .back(5)
+                //  .back(2)
+                .strafeLeft(24)
+                .turn(Math.toRadians(-185))
+                .back(34)
+                .strafeLeft(30)
                 .build();
 
-        TrajectorySequence spikeRight = drive.trajectorySequenceBuilder(toSpikeMark.end())
-                .turn(Math.toRadians(-90))
-                .forward(2)
-                .build();
-
-        TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
-                .back(3)
-                .strafeLeft(20)
-                .build();
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
 
         Trajectory spikeForward = drive.trajectoryBuilder(toSpikeMark.end())
                 .back(2)
                 .build();
 
-        Trajectory scoredSpikeForward = drive.trajectoryBuilder(spikeForward.end())
-                .splineToConstantHeading(new Vector2d(-33, -42), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-14, -34), Math.toRadians(90))
-                .forward(28)
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        TrajectorySequence scoredSpikeForwardProper = drive.trajectorySequenceBuilder(spikeForward.end())
+                .back(3)
+                .turn(Math.toRadians(-90))
+                .back(36)
+                .strafeLeft(3)
                 .build();
 
-        Trajectory toGateLeft = drive.trajectoryBuilder(scoredSpikeLeft.end())
-                .splineTo(new Vector2d(-35, -13), Math.toRadians(90))
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -83, Math.toRadians(90)))
+                .splineTo(new Vector2d(-109, -15), Math.toRadians(0))
+                .splineTo(new Vector2d(-114, -40), Math.toRadians(0))
                 .build();
 
-        Trajectory toGateRight = drive.trajectoryBuilder(scoredSpikeRight.end())
-                .splineTo(new Vector2d(-35, -13), Math.toRadians(90))
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
+                .strafeRight(23)
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
 
-        Trajectory toGateForward = drive.trajectoryBuilder(scoredSpikeForward.end())
-                .splineTo(new Vector2d(-14, 0), Math.toRadians(90))
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
+                .strafeRight(10)
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
 
-        Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -13, Math.toRadians(90)))
-                .splineTo(new Vector2d(-117, -13), Math.toRadians(0))
-                .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
+
+                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
 
-        TrajectorySequence backDropProper = drive.trajectorySequenceBuilder(new Pose2d(-31, -13, 0))
-                .back(86)
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
+        x++;
+
+
+        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpMiddle.end())
+                .addTemporalMarker(0.5, () ->{
+                    robot.backDropServo().setPosition(backDropServoHIGH);
+
+                })
+                .forward(5)
                 .strafeRight(20)
-                .back(5)
+                .turn(Math.toRadians(90))
                 .build();
 
-        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(backDrop.end())
-                .strafeRight(6)
-                .forward(-6, SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDrop.end())
-                .strafeRight(8)
-                .forward(-6, SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(backDrop.end())
-                .strafeRight(13)
-                .forward(-6, SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        TrajectorySequence parkProper = drive.trajectorySequenceBuilder(new Pose2d(-115, -33, 0))
-                .back(6)
-                .strafeLeft(20)
-                .build();
+        telemetry.addData("Trajectory setup success: ", x);
+        telemetry.update();
 
         //Camera Detection Storage Variable
-
-        // Tensorflow Initialization
-
+        String pos = "RIGHT";
 
         initTfod();
 
         waitForStart();
-
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
@@ -190,7 +200,6 @@ public class TestTensorflowBleuFar extends LinearOpMode {
             telemetry.update();
             sleep(20);
         }
-        String pos = "MIDDLE";
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
             if (currentRecognitions.get(0).getRight() < 400) {
@@ -210,70 +219,69 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
-        //Start of Program
+//
         drive.followTrajectory(toSpikeMark);
-        switch (pos) {
+        switch(pos){
             default:
                 telemetry.addLine("Going Left");
-
+                telemetry.update();
                 drive.followTrajectorySequence(spikeLeft);
 
-                //Score Spike Mark Pixel
+                //Deliver Spike Mark Pixel
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
 
-                //Line Up to BackDrop
                 drive.followTrajectorySequence(scoredSpikeLeft);
-                drive.followTrajectory(toGateLeft);
-                drive.followTrajectorySequence(backDropProper);
+                robot.intakeLock().setPosition(0);
                 drive.followTrajectorySequence(backDropLineUpLeft);
+
                 break;
 
             case "RIGHT":
                 telemetry.addLine("Going Right");
-
+                telemetry.update();
                 drive.followTrajectorySequence(spikeRight);
 
-                //Score Spike Mark Pixel
+                //Deliver Spike Mark Pixel
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
 
-                //Line Up to BackDrop
                 drive.followTrajectorySequence(scoredSpikeRight);
-                drive.followTrajectory(toGateRight);
-                drive.followTrajectorySequence(backDropProper);
                 drive.followTrajectorySequence(backDropLineUpRight);
+
                 break;
+
 
             case "MIDDLE":
                 telemetry.addLine("Going Forward");
+                telemetry.update();
                 drive.followTrajectory(spikeForward);
 
-                //Score Spike Mark Pixel
+                //Deliver Spike Mark Pixel
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-
-                //Line Up to BackDrop
-                drive.followTrajectory(scoredSpikeForward);
-                drive.followTrajectory(toGateForward);
-                drive.followTrajectorySequence(backDropProper);
+                drive.followTrajectorySequence(scoredSpikeForwardProper);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
+
                 break;
+
         }
 
-        //Deliver Back Drop Pixel
+        //Deliver BackDrop Pixel
         robot.backDropServo().setPosition(backDropServoLOW);
         sleep(1500);
 
+
         //Park Robot
         drive.followTrajectorySequence(parkProper);
-        drive.turn(Math.toRadians(93));
 
-        //Prepare Hardware for TeleOp
+        //Set Up Hardware for TeleOp
         robot.intakeLock().setPosition(1);
-        robot.backDropServo().setPosition(backDropServoHIGH);
         sleep(5000);
+
     }
+
+
     void initTfod() {
 
         // Create the TensorFlow processor by using a builder.

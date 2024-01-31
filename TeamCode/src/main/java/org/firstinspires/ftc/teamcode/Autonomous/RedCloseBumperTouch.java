@@ -120,7 +120,7 @@ public class RedCloseBumperTouch extends LinearOpMode {
 
         //Trajectory to line up Forward backdrop delivery
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(new Pose2d(-63, 79, Math.toRadians(0)))
-                .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(-5.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -144,7 +144,7 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 .build();
 
         Trajectory returnToStart = drive.trajectoryBuilder(parkProper.end())
-                .splineTo(new Vector2d(-33, 109), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(-33, 109), Math.toRadians(-90))
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);
@@ -197,7 +197,7 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeForwardProper);
-                driveToHit(drive, robot, -0.2, 2000);
+                driveToHit(drive, robot, -0.2, 5000);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
                 break;
         }
@@ -217,6 +217,9 @@ public class RedCloseBumperTouch extends LinearOpMode {
         timer.startTime();
 
         while(!robot.isBackDrop() && timer.time(TimeUnit.MILLISECONDS) <= timeout){
+            telemetry.addData("Left Pressed: ", robot.bumperTouchLeft().getState());
+            telemetry.addData("Right Pressed: ", robot.bumperTouchRight().getState());
+            telemetry.update();
             drive.setMotorPowers(power, power, power, power);
         }
         drive.setMotorPowers(0,0,0,0);

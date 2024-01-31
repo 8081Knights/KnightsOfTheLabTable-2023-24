@@ -10,9 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.DigitalAllPinsParameters;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
@@ -42,7 +44,8 @@ public class HardwareSoftware {
     Servo backDropServo;
     Servo hangRelease;
 
-    DigitalChannel bumperTouch;
+    DigitalChannel bumperTouchLeft;
+    DigitalChannel bumperTouchRight;
 
     public List<DcMotorEx> motors;
 
@@ -177,9 +180,14 @@ public class HardwareSoftware {
 
         hangRelease = hw.get(Servo.class, "hangRelease");
 
-        bumperTouch = hw.get(DigitalChannel.class, "bumperTouch");
+        bumperTouchLeft = hw.get(DigitalChannel.class, "bumperTouchLeft");
+        bumperTouchRight = hw.get(DigitalChannel.class, "bumperTouchRight");
 
-        bumperTouch.setMode(DigitalChannel.Mode.INPUT);
+        bumperTouchLeft.setMode(DigitalChannel.Mode.INPUT);
+        bumperTouchRight.setMode(DigitalChannel.Mode.INPUT);
+
+
+
 
 
         pixelServo.setPosition(0.5);
@@ -228,7 +236,10 @@ public class HardwareSoftware {
     public Servo dronelunch() {return droneLaunch;}
     public Servo backDropServo(){return backDropServo;}
 
-    public DigitalChannel bumperTouch(){return bumperTouch;}
+    public DigitalChannel bumperTouchLeft(){return bumperTouchLeft;}
+    public DigitalChannel bumperTouchRight(){return bumperTouchRight;}
+
+    public boolean isBackDrop(){return !(bumperTouchLeft.getState() && bumperTouchRight.getState());}
 
 
 

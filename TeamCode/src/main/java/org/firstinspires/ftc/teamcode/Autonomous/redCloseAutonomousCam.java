@@ -208,7 +208,7 @@ public class redCloseAutonomousCam extends LinearOpMode {
 
 //        robot.pixeldrop().setPosition(1);
 
-        String pos = "MIDDLE";
+        String pos = "RIGHT";
 
         robot.backDropServo().setPosition(0.2);
 //

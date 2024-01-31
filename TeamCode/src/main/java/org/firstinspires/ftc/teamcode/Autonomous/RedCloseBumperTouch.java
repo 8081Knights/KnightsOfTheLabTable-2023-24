@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.HardwareSoftware;
@@ -16,6 +17,9 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "Red Close with Bumper Sensor")
 public class RedCloseBumperTouch extends LinearOpMode {
@@ -30,6 +34,8 @@ public class RedCloseBumperTouch extends LinearOpMode {
 
         //Initializing the roadRunner tracking system
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+
 
 
         //Initializing Robot Hardware
@@ -97,6 +103,7 @@ public class RedCloseBumperTouch extends LinearOpMode {
 
         //Trajectory to backdrop from scored Spike Mark
         TrajectorySequence scoredSpikeForwardProper = drive.trajectorySequenceBuilder(spikeForward.end())
+
                 .back(2)
                 .turn(Math.toRadians(90))
                 .back(36)
@@ -112,15 +119,14 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 .build();
 
         //Trajectory to line up Forward backdrop delivery
-        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
-                // .strafeRight(10)
-                .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(new Pose2d(-63, 79, Math.toRadians(0)))
+                .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         //Trajectory to line up Left backdrop delivery
-        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
+        TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
                 .strafeRight(13)
                 .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -135,6 +141,10 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 .turn(Math.toRadians(-90))
                 .strafeRight(4)
                 .back(20)
+                .build();
+
+        Trajectory returnToStart = drive.trajectoryBuilder(parkProper.end())
+                .splineTo(new Vector2d(-33, 109), Math.toRadians(-90))
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);
@@ -155,7 +165,6 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 drive.followTrajectorySequence(scoredSpikeLeft);
                 //  drive.followTrajectorySequence(scoredSpikeForward);
                 robot.intakeLock().setPosition(0);
-                driveToHit(drive, robot, 0.2);
                 drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
 
@@ -168,8 +177,6 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeLeft);
                 robot.intakeLock().setPosition(0);
-                driveToHit(drive, robot, 0.2);
-
                 drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
 
@@ -180,8 +187,6 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeRight);
-                driveToHit(drive, robot, 0.2);
-
                 drive.followTrajectorySequence(backDropLineUpRight);
                 break;
 
@@ -192,8 +197,7 @@ public class RedCloseBumperTouch extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeForwardProper);
-                driveToHit(drive, robot, 0.2);
-
+                driveToHit(drive, robot, -0.2, 2000);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
                 break;
         }
@@ -203,12 +207,16 @@ public class RedCloseBumperTouch extends LinearOpMode {
 
         drive.followTrajectorySequence(parkProper);
         robot.intakeLock().setPosition(1);
+        drive.followTrajectory(returnToStart);
         sleep(5000);
     }
 
-    public void driveToHit(SampleMecanumDrive drive, HardwareSoftware robot, double power){
+    public void driveToHit(SampleMecanumDrive drive, HardwareSoftware robot, double power, double timeout){
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        timer.startTime();
 
-        while(robot.bumperTouch().getState()){
+        while(!robot.isBackDrop() && timer.time(TimeUnit.MILLISECONDS) <= timeout){
             drive.setMotorPowers(power, power, power, power);
         }
         drive.setMotorPowers(0,0,0,0);

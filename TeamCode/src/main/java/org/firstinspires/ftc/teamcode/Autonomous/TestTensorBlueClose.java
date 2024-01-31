@@ -18,13 +18,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous(name="1. Blue Close with Camera Competition")
-public class blueCloseAutonomousCam extends LinearOpMode {
+@Autonomous(name="1. Blue Close with Camera Competition TEST")
+public class TestTensorBlueClose extends LinearOpMode {
 
     OpenCvWebcam cam;
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.77;
+    double backDropServoLOW = 0.725;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -108,9 +108,9 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         x++;
 
         TrajectorySequence scoredSpikeLeft = drive.trajectorySequenceBuilder(spikeLeft.end())
-              //  .back(2)
+                .back(2)
                 .strafeLeft(24)
-                .turn(Math.toRadians(-185))
+                .turn(Math.toRadians(-180))
                 .back(34)
                 .strafeLeft(30)
                 .build();
@@ -148,7 +148,7 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeRight(23)
+                .strafeRight(24)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
@@ -192,7 +192,7 @@ public class blueCloseAutonomousCam extends LinearOpMode {
         telemetry.update();
 
         //Camera Detection Storage Variable
-        String pos = "RIGHT";
+        String pos = "LEFT";
 
 
         waitForStart();

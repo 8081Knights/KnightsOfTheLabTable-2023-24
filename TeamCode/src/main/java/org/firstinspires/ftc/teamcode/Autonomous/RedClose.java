@@ -163,7 +163,7 @@ public class RedClose extends LinearOpMode {
 
         robot.backDropServo().setPosition(backDropServoHIGH);
 
-        String pos = "MIDDLE";
+        String pos = "RIGHT";
 
         waitForStart();
 

@@ -142,7 +142,7 @@ public class blueFarAutonomousCam extends LinearOpMode {
                 .build();
 
         //Camera Detection Storage Variable
-        String pos = "MIDDLE";
+        String pos = "RIGHT";
 
         waitForStart();
 

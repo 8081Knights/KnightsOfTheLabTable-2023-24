@@ -207,6 +207,7 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         telemetry.addData("posotion: ", pos);
         telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
         telemetry.addData("deyects?", currentRecognitions.size());
+        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
         //Start of Program

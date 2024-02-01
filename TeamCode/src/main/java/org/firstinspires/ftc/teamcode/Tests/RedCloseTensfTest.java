@@ -178,20 +178,21 @@ public class RedCloseTensfTest extends LinearOpMode {
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
             if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "MIDDLE";
-            } else {
+            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "RIGHT";
             }
             isDefault = false;
         }
+        else{
+            pos="LEFT";
+        }
         telemetry.addData("Did run loop? ", recognisedsounter);
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
+//        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+//        telemetry.addData("deyects?", currentRecognitions.size());
+//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
         drive.followTrajectory(toSpikeMark);

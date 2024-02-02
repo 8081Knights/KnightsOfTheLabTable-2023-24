@@ -241,13 +241,13 @@ public class CompTeleKeaton extends OpMode {
                 robot.runSlides(slideTarget, slideVelocity);
             }
             if(gamepad2.right_trigger > 0.1) {
-                robot.hangRight().setPower(gamepad2.right_trigger);
+                robot.hangRight().setPower(-gamepad2.right_trigger);
                 telemetry.addLine("HANGING!!");
                 telemetry.update();
 
             }
             if(gamepad2.left_trigger>.1){
-                robot.hangLeft().setPower(gamepad2.left_trigger);
+                robot.hangLeft().setPower(-gamepad2.left_trigger);
             }
             else{
                 robot.hang(0);

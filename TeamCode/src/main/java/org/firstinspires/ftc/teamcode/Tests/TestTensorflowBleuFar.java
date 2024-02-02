@@ -118,8 +118,8 @@ public class TestTensorflowBleuFar extends LinearOpMode {
                 .build();
 
         Trajectory scoredSpikeForward = drive.trajectoryBuilder(spikeForward.end())
-                .splineToConstantHeading(new Vector2d(-33, -42), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-14, -34), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-33, -47), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-20, -34), Math.toRadians(90))
                 .forward(28)
                 .build();
 
@@ -132,11 +132,11 @@ public class TestTensorflowBleuFar extends LinearOpMode {
                 .build();
 
         Trajectory toGateForward = drive.trajectoryBuilder(scoredSpikeForward.end())
-                .splineTo(new Vector2d(-14, 0), Math.toRadians(90))
+                .splineTo(new Vector2d(-35, 0), Math.toRadians(180))
                 .build();
 
         Trajectory backDrop = drive.trajectoryBuilder(new Pose2d(-31, -13, Math.toRadians(90)))
-                .splineTo(new Vector2d(-117, -13), Math.toRadians(0))
+                .splineTo(new Vector2d(-117, 0), Math.toRadians(0))
                 .splineTo(new Vector2d(-123, -33), Math.toRadians(0))
                 .build();
 
@@ -153,7 +153,8 @@ public class TestTensorflowBleuFar extends LinearOpMode {
                 .build();
 
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDrop.end())
-                .strafeRight(8)
+                .forward(3)
+                .strafeRight(15)
                 .forward(-6, SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -170,9 +171,7 @@ public class TestTensorflowBleuFar extends LinearOpMode {
                 .build();
 
         //Camera Detection Storage Variable
-
-        // Tensorflow Initialization
-
+        String pos = "RIGHT";
 
         initTfod();
 
@@ -190,24 +189,24 @@ public class TestTensorflowBleuFar extends LinearOpMode {
             telemetry.update();
             sleep(20);
         }
-        String pos = "MIDDLE";
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
             if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "MIDDLE";
-            } else {
+            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "RIGHT";
             }
             isDefault = false;
         }
+        else{
+            pos="LEFT";
+        }
         telemetry.addData("Did run loop? ", recognisedsounter);
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
+//        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+//        telemetry.addData("deyects?", currentRecognitions.size());
+//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
         //Start of Program

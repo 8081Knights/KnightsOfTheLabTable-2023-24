@@ -29,7 +29,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.98;
+    double backDropServoLOW = 0.7;
     double driveTrainSlowedVelocity = 20;
     final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
@@ -96,7 +96,7 @@ public class RedCloseTensfTest extends LinearOpMode {
                 .back(36)
                 // .forward(1)
                 .strafeLeft(17)
-                .back(2)
+                .forward(4)
                 .build();
 
         //Trajectory to deliver Forward Spike Mark
@@ -124,7 +124,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         //Trajectory to line up Right backdrop delivery
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeRight(2)
+                .strafeLeft(6)
                 .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();

@@ -21,7 +21,7 @@ public class CompTeleKeaton extends OpMode {
 
 
     //TODO: Change to 90 seconds
-    double timeToEnd = 60;
+    double timeToEnd = 0;
 
     boolean g1aDown = false;
     double maxSpeed = 1;
@@ -41,13 +41,13 @@ public class CompTeleKeaton extends OpMode {
 
 
     //TODO: Tune
-    int maxSlideTarget = -2000;
+    int maxSlideTarget = -1500;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
     int slideMin = 100;
 
-    double MAX_INTAKE_SPEED = 0.7;
+    double MAX_INTAKE_SPEED = 0.6;
 
 
 
@@ -56,7 +56,7 @@ public class CompTeleKeaton extends OpMode {
 
         robot.init(hardwareMap);
 
-        robot.dronelunch().setPosition(1);
+        robot.dronelunch().setPosition(0);
 
         timer.reset();
         timer.startTime();
@@ -67,6 +67,7 @@ public class CompTeleKeaton extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("Current Time: ", timer.time(TimeUnit.SECONDS));
+        telemetry.addData("Slide Position: ", robot.linearSlide().getCurrentPosition());
         telemetry.update();
 
         //Turn Variable for Headless Robot Logic
@@ -230,8 +231,10 @@ public class CompTeleKeaton extends OpMode {
 
 
         if(runslide){
-            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < minSlideTarget){
+            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < slideMin){
                 robot.linearSlide().setPower(0);
+
+
 
             }
             else{

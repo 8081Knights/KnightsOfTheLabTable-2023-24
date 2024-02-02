@@ -21,7 +21,7 @@ public class CompTeleBrayden extends OpMode {
 
 
     //TODO: Change to 90 seconds
-    double timeToEnd = 20;
+    double timeToEnd = 0;
 
     boolean g1aDown = false;
     double maxSpeed = 1;
@@ -41,13 +41,13 @@ public class CompTeleBrayden extends OpMode {
 
 
     //TODO: Tune
-    int maxSlideTarget = -2000;
+    int maxSlideTarget = -1500;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
-    int slideMin = 50;
+    int slideMin = 100;
 
-    double MAX_INTAKE_SPEED = 0.7;
+    double MAX_INTAKE_SPEED = 0.6;
 
 
 
@@ -66,6 +66,9 @@ public class CompTeleBrayden extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("Current Time: ", timer.time(TimeUnit.SECONDS));
+        telemetry.addData("Slide Position: ", robot.linearSlide().getCurrentPosition());
+        telemetry.update();
 
         //Turn Variable for Headless Robot Logic
         double driveTurn = gamepad1.right_stick_x;
@@ -182,7 +185,7 @@ public class CompTeleBrayden extends OpMode {
         }
 
         if((gamepad2.right_bumper || gamepad2.left_bumper) && timer.time(TimeUnit.SECONDS) >= timeToEnd){
-            robot.hangRelease().setPosition(0);
+            robot.hangRelease().setPosition(1);
         }
 
 
@@ -228,18 +231,23 @@ public class CompTeleBrayden extends OpMode {
 
 
         if(runslide){
-            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < minSlideTarget){
+            if(Math.abs(robot.linearSlide().getCurrentPosition()) < slideMin && Math.abs(slideTarget) < slideMin){
                 robot.linearSlide().setPower(0);
+
+
 
             }
             else{
                 robot.runSlides(slideTarget, slideVelocity);
             }
-            if(gamepad2.right_trigger > 0.1 && timer.time(TimeUnit.SECONDS) >= timeToEnd) {
-                robot.hang(gamepad2.right_trigger*0.5);
+            if(gamepad2.right_trigger > 0.1) {
+                robot.hangRight().setPower(gamepad2.right_trigger);
                 telemetry.addLine("HANGING!!");
                 telemetry.update();
 
+            }
+            if(gamepad2.left_trigger>.1){
+                robot.hangLeft().setPower(gamepad2.left_trigger);
             }
             else{
                 robot.hang(0);

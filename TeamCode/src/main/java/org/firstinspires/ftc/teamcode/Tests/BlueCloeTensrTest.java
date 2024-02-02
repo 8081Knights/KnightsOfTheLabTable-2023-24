@@ -139,7 +139,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeRight(23)
+                .strafeRight(21)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
@@ -182,12 +182,12 @@ public class BlueCloeTensrTest extends LinearOpMode {
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
 
-        //Camera Detection Storage Variable
         String pos = "RIGHT";
 
         initTfod();
 
         waitForStart();
+
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
@@ -203,22 +203,22 @@ public class BlueCloeTensrTest extends LinearOpMode {
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
             if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "MIDDLE";
-            } else {
+            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "RIGHT";
             }
             isDefault = false;
         }
+        else{
+            pos="LEFT";
+        }
         telemetry.addData("Did run loop? ", recognisedsounter);
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
+//        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+//        telemetry.addData("deyects?", currentRecognitions.size());
+//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
-
 //
         drive.followTrajectory(toSpikeMark);
         switch(pos){

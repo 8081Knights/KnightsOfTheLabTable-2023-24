@@ -83,7 +83,7 @@ public class RedFarTensflTest extends LinearOpMode {
 
 
         TrajectorySequence scoredSpikeForwardProper = drive.trajectorySequenceBuilder(spikeForward.end())
-                .strafeLeft(24)
+                .strafeLeft(20)
                 .forward(24)
                 .turn(Math.toRadians(90))
                 .back(24)
@@ -98,20 +98,20 @@ public class RedFarTensflTest extends LinearOpMode {
                 .build();
 
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(backDropProper.end())
-                .strafeRight(2)
+//                .strafeRight(9)
                 .forward(-6, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(backDropProper.end())
-                .strafeRight(9)
+                .strafeRight(1)
                 .forward(-4, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .back(2)
                 .build();
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(backDropProper.end())
-                .strafeRight(9)
+                .strafeRight(22)
                 //was 13
                 .forward(-6, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -147,20 +147,21 @@ public class RedFarTensflTest extends LinearOpMode {
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
             if (currentRecognitions.get(0).getRight() < 400) {
-                pos = "LEFT";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "MIDDLE";
-            } else {
+            } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "RIGHT";
             }
             isDefault = false;
         }
+        else{
+            pos="LEFT";
+        }
         telemetry.addData("Did run loop? ", recognisedsounter);
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
-        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
+//        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+//        telemetry.addData("deyects?", currentRecognitions.size());
+//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
         drive.followTrajectory(toSpikeMark);
         switch (pos)

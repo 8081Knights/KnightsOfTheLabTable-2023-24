@@ -262,8 +262,8 @@ public class HardwareSoftware {
     }
 
     public void hang(double power){
-        hangLeft.setPower(power);
-        hangRight.setPower(power);
+        hangLeft.setPower(-power);
+        hangRight.setPower(-power);
     }
 
     public AHRS gyro(){ return gyro;}

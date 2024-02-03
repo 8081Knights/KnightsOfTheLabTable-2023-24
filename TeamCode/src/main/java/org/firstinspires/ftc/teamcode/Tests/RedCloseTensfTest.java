@@ -124,8 +124,8 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         //Trajectory to line up Right backdrop delivery
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeLeft(6)
-                .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeLeft(4)
+                .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -152,7 +152,7 @@ public class RedCloseTensfTest extends LinearOpMode {
                 .forward(6)
                 .turn(Math.toRadians(-90))
                 .strafeRight(4)
-                .back(20)
+                .back(32)
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);

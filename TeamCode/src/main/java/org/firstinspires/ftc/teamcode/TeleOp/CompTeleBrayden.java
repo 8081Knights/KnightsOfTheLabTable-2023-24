@@ -185,7 +185,7 @@ public class CompTeleBrayden extends OpMode {
         }
 
         if((gamepad2.right_bumper || gamepad2.left_bumper) && timer.time(TimeUnit.SECONDS) >= timeToEnd){
-            robot.hangRelease().setPosition(1);
+            robot.hangRelease().setPosition(0);
         }
 
 

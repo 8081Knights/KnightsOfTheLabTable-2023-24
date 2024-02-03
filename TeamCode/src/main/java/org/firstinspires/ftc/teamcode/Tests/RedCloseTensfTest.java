@@ -29,7 +29,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.7;
+    double backDropServoLOW = 0.68;
     double driveTrainSlowedVelocity = 20;
     final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";

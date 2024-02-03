@@ -193,7 +193,7 @@ public class HardwareSoftware {
         pixelServo.setPosition(0.5);
         intakeLock.setPosition(1);
         pixeldrop.setPosition(0);
-        hangRelease.setPosition(0);
+        hangRelease.setPosition(1);
 
 
     }

@@ -28,7 +28,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.68;
+    double backDropServoLOW = 0.69;
 
 
     final boolean USE_WEBCAM = true;
@@ -103,7 +103,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 .strafeLeft(24)
                 .turn(Math.toRadians(-185))
                 .back(34)
-                .strafeLeft(30)
+//                .strafeLeft(30)
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -139,7 +139,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeRight(21)
+                .strafeLeft(4)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
@@ -160,7 +160,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeRight(2)
+                .strafeRight(3)
 
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )

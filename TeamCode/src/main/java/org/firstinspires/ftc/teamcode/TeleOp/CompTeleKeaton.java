@@ -41,13 +41,13 @@ public class CompTeleKeaton extends OpMode {
 
 
     //TODO: Tune
-    int maxSlideTarget = -1500;
+    int maxSlideTarget = -1700;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
     int slideMin = 100;
 
-    double MAX_INTAKE_SPEED = 0.6;
+    double MAX_INTAKE_SPEED = 1;
 
 
 

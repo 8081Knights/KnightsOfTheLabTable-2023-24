@@ -268,6 +268,12 @@ public class CompTeleKeaton extends OpMode {
             }
 
         }
+
+        if(gamepad2.right_bumper){
+            robot.hangOne.setPosition(1);
+            robot.hangTwo.setPosition(0);
+
+        }
 //        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50 && runslide){
 //            robot.linearSlide().setPower(0);
 //            telemetry.addLine("Slides at Rest");

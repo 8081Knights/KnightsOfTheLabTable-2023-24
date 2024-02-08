@@ -46,6 +46,9 @@ public class HardwareSoftware {
 
     DigitalChannel bumperTouchLeft;
     DigitalChannel bumperTouchRight;
+    public Servo hangOne;
+    public Servo hangTwo;
+
 
     public List<DcMotorEx> motors;
 
@@ -179,6 +182,8 @@ public class HardwareSoftware {
         droneLaunch = hw.get(Servo.class, "droneLaunch");
 
         hangRelease = hw.get(Servo.class, "hangRelease");
+        hangOne = hw.get(Servo.class, "hangOne");
+        hangTwo = hw.get(Servo.class, "hangTwo");
 
         bumperTouchLeft = hw.get(DigitalChannel.class, "bumperTouchLeft");
         bumperTouchRight = hw.get(DigitalChannel.class, "bumperTouchRight");
@@ -190,10 +195,14 @@ public class HardwareSoftware {
 
 
 
+
         pixelServo.setPosition(0.5);
         intakeLock.setPosition(1);
         pixeldrop.setPosition(0);
         hangRelease.setPosition(1);
+
+        hangOne.setPosition(0);
+        hangTwo.setPosition(1);
 
 
     }
@@ -240,7 +249,6 @@ public class HardwareSoftware {
     public DigitalChannel bumperTouchRight(){return bumperTouchRight;}
 
     public boolean isBackDrop(){return !(bumperTouchLeft.getState() && bumperTouchRight.getState());}
-
 
 
 

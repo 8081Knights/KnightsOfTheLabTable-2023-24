@@ -28,7 +28,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.69;
+    double backDropServoLOW = 0.695;
 
 
     final boolean USE_WEBCAM = true;
@@ -139,7 +139,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeLeft(4)
+                .strafeLeft(6)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .build();
@@ -179,6 +179,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 .forward(5)
                 .strafeRight(20)
                 .turn(Math.toRadians(90))
+                .back(3)
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -188,7 +189,34 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
         initTfod();
 
+        telemetry.addLine("Press a to add a 5 second wait");
+        telemetry.update();
+        boolean g1a = false;
+        boolean wait = false;
+        while(!isStarted() && !isStopRequested()){
+            if(gamepad1.a){
+                g1a = true;
+            }
+            else if(g1a && !gamepad1.a){
+                g1a = false;
+                if(!wait){
+                    wait = true;
+                    telemetry.addLine("5 Second wait Added");
+                    telemetry.update();
+                }
+                else{
+                    wait = false;
+                    telemetry.addLine("Press a to add a 5 second wait");
+                    telemetry.update();
+                }
+            }
+        }
+
         waitForStart();
+
+        if(wait){
+            sleep(5000);
+        }
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
@@ -204,7 +232,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         }
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400) {
+            if (currentRecognitions.get(0).getRight() < 400 ) { //was 0
                 pos = "MIDDLE";
             } else if (currentRecognitions.get(0).getRight() < 640) {
                 pos = "RIGHT";

@@ -34,6 +34,7 @@ public class CompTeleKeaton extends OpMode {
     boolean g2yDown = false;
     boolean g2xDown = false;
     boolean g2bDown = false;
+    boolean g2RB    = false;
 
     boolean runslide = true;
 
@@ -41,7 +42,8 @@ public class CompTeleKeaton extends OpMode {
 
 
     //TODO: Tune
-    int maxSlideTarget = -1700;
+    int maxSlideTarget = -2000;
+    int midSlideTarget = -1700;
     int minSlideTarget = -25;
     int slideTarget = minSlideTarget;
     int slideVelocity = 2000;
@@ -121,8 +123,11 @@ public class CompTeleKeaton extends OpMode {
         }
 
         if(gamepad1.dpad_up){
-            slideTarget = maxSlideTarget;
+            slideTarget = midSlideTarget;
 
+        }
+        else if(gamepad1.dpad_left){
+            slideTarget = maxSlideTarget;
         }
         else if(gamepad1.dpad_down){
             slideTarget = minSlideTarget;
@@ -134,7 +139,7 @@ public class CompTeleKeaton extends OpMode {
             g1xDown = true;
         }
         else if(!gamepad1.x && g1xDown) {
-            robot.pixelServo().setPosition(0.5);
+            robot.pixelServo().setPosition(0.47);
 
             g1xDown = false;
         }
@@ -143,7 +148,7 @@ public class CompTeleKeaton extends OpMode {
             g1bDown = true;
         }
         else if(!gamepad1.b && g1bDown) {
-            robot.pixelServo().setPosition(0.5);
+            robot.pixelServo().setPosition(0.47);
 
             g1bDown = false;
         }
@@ -270,9 +275,25 @@ public class CompTeleKeaton extends OpMode {
         }
 
         if(gamepad2.right_bumper){
-            robot.hangOne.setPosition(1);
-            robot.hangTwo.setPosition(0);
+            if (!g2RB)  {
+                g2RB = true;
+                boolean up = (robot.hangOne.getPosition() < 1) && (robot.hangTwo.getPosition() > 0);
 
+                if(up){
+                    robot.hangTwo.setPosition(0);
+                    robot.hangOne.setPosition(1);
+
+                }
+                else{
+                    robot.hangOne.setPosition(0);
+                    robot.hangTwo.setPosition(1);
+                }
+
+            }
+
+
+        } else {
+            g2RB = false;
         }
 //        if(Math.abs(robot.linearSlide().getCurrentPosition()) < 100 && Math.abs(slideTarget) < 50 && runslide){
 //            robot.linearSlide().setPower(0);

@@ -201,8 +201,8 @@ public class HardwareSoftware {
         pixeldrop.setPosition(0);
         hangRelease.setPosition(1);
 
-        hangOne.setPosition(0);
-        hangTwo.setPosition(1);
+        hangOne.setPosition(1);
+        hangTwo.setPosition(0);
 
 
     }

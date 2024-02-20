@@ -191,9 +191,9 @@ public class TestTensorflowBleuFar extends LinearOpMode {
         }
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400) {
+            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getConfidence() >= 0.82 && currentRecognitions.get(0).getLabel() == LABELS[0]) {
                 pos = "MIDDLE";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
+            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getConfidence() >= 0.82 && currentRecognitions.get(0).getLabel() == LABELS[0]) {
                 pos = "RIGHT";
             }
             isDefault = false;

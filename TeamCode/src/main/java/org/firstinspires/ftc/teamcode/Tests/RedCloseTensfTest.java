@@ -29,7 +29,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.68;
+    double backDropServoLOW = 0.695;
     double driveTrainSlowedVelocity = 20;
     final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
@@ -71,7 +71,7 @@ public class RedCloseTensfTest extends LinearOpMode {
         //Trajectory to deliver Left Spike Mark
         TrajectorySequence spikeLeft = drive.trajectorySequenceBuilder(toSpikeMark.end())
                 .turn(Math.toRadians(90))
-                .forward(3)
+                .forward(4)
                 .build();
 
         //Trajectory to backdrop from scored Spike Mark
@@ -92,7 +92,7 @@ public class RedCloseTensfTest extends LinearOpMode {
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
                 .back(1)
                 .strafeLeft(15)
-                .turn(Math.toRadians(180))
+                .turn(Math.toRadians(178))
                 .back(36)
                 // .forward(1)
                 .strafeLeft(17)
@@ -124,7 +124,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         //Trajectory to line up Right backdrop delivery
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeLeft(4)
+                .strafeLeft(4.5)
                 .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -132,7 +132,7 @@ public class RedCloseTensfTest extends LinearOpMode {
         //Trajectory to line up Forward backdrop delivery
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
                 // .strafeRight(10)
-                .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -152,7 +152,7 @@ public class RedCloseTensfTest extends LinearOpMode {
                 .forward(6)
                 .turn(Math.toRadians(-90))
                 .strafeRight(4)
-                .back(32)
+                .back(34)
                 .build();
 
         robot.backDropServo().setPosition(backDropServoHIGH);
@@ -161,8 +161,34 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         initTfod();
 
+        telemetry.addLine("Press a to add a 5 second wait");
+        telemetry.update();
+        boolean g1a = false;
+        boolean wait = false;
+        while(!isStarted() && !isStopRequested()){
+            if(gamepad1.a){
+                g1a = true;
+            }
+            else if(g1a && !gamepad1.a){
+                g1a = false;
+                if(!wait){
+                    wait = true;
+                    telemetry.addLine("5 Second wait Added");
+                    telemetry.update();
+                }
+                else{
+                    wait = false;
+                    telemetry.addLine("Press a to add a 5 second wait");
+                    telemetry.update();
+                }
+            }
+        }
+
         waitForStart();
 
+        if(wait){
+            sleep(5000);
+        }
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
@@ -177,9 +203,9 @@ public class RedCloseTensfTest extends LinearOpMode {
         }
         boolean isDefault = true;
         if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400) {
+            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
                 pos = "MIDDLE";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
+            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
                 pos = "RIGHT";
             }
             isDefault = false;

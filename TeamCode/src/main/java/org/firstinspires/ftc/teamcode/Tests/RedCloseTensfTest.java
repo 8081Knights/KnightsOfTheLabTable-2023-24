@@ -184,7 +184,6 @@ public class RedCloseTensfTest extends LinearOpMode {
             }
         }
 
-        waitForStart();
 
         if(wait){
             sleep(5000);
@@ -216,6 +215,9 @@ public class RedCloseTensfTest extends LinearOpMode {
         telemetry.addData("Did run loop? ", recognisedsounter);
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
+
+        waitForStart();
+
 //        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
 //        telemetry.addData("deyects?", currentRecognitions.size());
 //        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());

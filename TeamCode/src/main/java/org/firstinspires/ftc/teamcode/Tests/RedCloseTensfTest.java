@@ -32,7 +32,7 @@ public class RedCloseTensfTest extends LinearOpMode {
     double backDropServoLOW = 0.9075;
     double driveTrainSlowedVelocity = 20;
     final boolean USE_WEBCAM = true;
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240410_154146.tflite";
     final String[] LABELS = {
             "BlueTeamProp",
             "RedTeamProp",
@@ -163,9 +163,43 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         String pos = "LEFT";
 
-//        initTfod();
+        initTfod();
 
         telemetry.addLine("Press a to add a 5 second wait");
+        telemetry.update();
+
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        boolean isRecognised = (currentRecognitions.size() != 0);
+        int recognisedsounter = 0;
+        while (!isRecognised && recognisedsounter <=150) {
+            currentRecognitions = tfod.getRecognitions();
+            isRecognised = (currentRecognitions.size() != 0);
+            ++recognisedsounter;
+            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+            telemetry.update();
+            sleep(20);
+        }
+        boolean isDefault = true;
+        if (currentRecognitions.size() > 0){
+            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+                pos = "MIDDLE";
+            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+                pos = "RIGHT";
+            }
+            isDefault = false;
+        }
+        else{
+            pos="RIGHT";
+        }
+        telemetry.addData("Did run loop? ", recognisedsounter);
+        telemetry.addData("recognised", isRecognised);
+        telemetry.addData("posotion: ", pos);
+
+
+        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+        telemetry.addData("deyects?", currentRecognitions.size());
+//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
 
@@ -190,45 +224,14 @@ public class RedCloseTensfTest extends LinearOpMode {
             }
         }
 
+
         waitForStart();
 
 
         if(wait){
             sleep(5000);
         }
-//        List<Recognition> currentRecognitions = tfod.getRecognitions();
-//        boolean isRecognised = (currentRecognitions.size() != 0);
-//        int recognisedsounter = 0;
-//        while (!isRecognised && recognisedsounter <=150) {
-//            currentRecognitions = tfod.getRecognitions();
-//            isRecognised = (currentRecognitions.size() != 0);
-//            ++recognisedsounter;
-//            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
-//            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-//            telemetry.update();
-//            sleep(20);
-//        }
-//        boolean isDefault = true;
-//        if (currentRecognitions.size() > 0){
-//            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-//                pos = "MIDDLE";
-//            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-//                pos = "RIGHT";
-//            }
-//            isDefault = false;
-//        }
-//        else{
-//            pos="RIGHT";
-//        }
-//        telemetry.addData("Did run loop? ", recognisedsounter);
-//        telemetry.addData("recognised", isRecognised);
-        telemetry.addData("posotion: ", pos);
 
-
-//        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-//        telemetry.addData("deyects?", currentRecognitions.size());
-//        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
-        telemetry.update();
 
         drive.followTrajectory(toSpikeMark);
         switch (pos) {

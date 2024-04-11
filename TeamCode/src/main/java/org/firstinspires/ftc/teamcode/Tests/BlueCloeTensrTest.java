@@ -28,7 +28,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.695;
+    double backDropServoLOW = 0.9075;
 
 
     final boolean USE_WEBCAM = true;
@@ -80,8 +80,11 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
+                //.forward(-2)
                 .back(39)
                 .strafeRight(3)
+                //.back(2)
+
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -100,7 +103,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
         TrajectorySequence scoredSpikeLeft = drive.trajectorySequenceBuilder(spikeLeft.end())
                 //  .back(2)
-                .strafeLeft(24)
+                .strafeLeft(20)
                 .turn(Math.toRadians(-185))
                 .back(34)
 //                .strafeLeft(30)
@@ -142,6 +145,11 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 .strafeLeft(6)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
+                .forward(5)
+                .addTemporalMarker(1.4, () ->{
+                    robot.backDropServo().setPosition(backDropServoLOW);
+
+                })
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -153,6 +161,11 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 .strafeRight(10)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
+                .forward(5)
+                .addTemporalMarker(1.6, () ->{
+                    robot.backDropServo().setPosition(backDropServoLOW);
+
+                })
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -160,10 +173,17 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeRight(3)
+                .back(3)
+                .strafeRight(4.5)
 
-                .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(-1,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
+               // .back(2)
+                .forward(5)
+                .addTemporalMarker(1.2, () ->{
+                    robot.backDropServo().setPosition(backDropServoLOW);
+
+                })
                 .build();
 
         telemetry.addData("Trajectory setup success: ", x);
@@ -172,11 +192,11 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
         TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpMiddle.end())
-                .addTemporalMarker(0.5, () ->{
+                .addTemporalMarker(0.25, () ->{
                     robot.backDropServo().setPosition(backDropServoHIGH);
 
                 })
-                .forward(5)
+                .forward(8)
                 .strafeRight(20)
                 .turn(Math.toRadians(90))
                 .back(3)
@@ -185,9 +205,9 @@ public class BlueCloeTensrTest extends LinearOpMode {
         telemetry.addData("Trajectory setup success: ", x);
         telemetry.update();
 
-        String pos = "RIGHT";
+        String pos = "MIDDLE";
 
-        initTfod();
+//        initTfod();
 
         telemetry.addLine("Press a to add a 5 second wait");
         telemetry.update();
@@ -218,32 +238,32 @@ public class BlueCloeTensrTest extends LinearOpMode {
             sleep(5000);
         }
 
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        boolean isRecognised = (currentRecognitions.size() != 0);
-        int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=150) {
-            currentRecognitions = tfod.getRecognitions();
-            isRecognised = (currentRecognitions.size() != 0);
-            ++recognisedsounter;
-            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
-            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-            telemetry.update();
-            sleep(20);
-        }
-        boolean isDefault = true;
-        if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400 ) { //was 0
-                pos = "MIDDLE";
-            } else if (currentRecognitions.get(0).getRight() < 640) {
-                pos = "RIGHT";
-            }
-            isDefault = false;
-        }
-        else{
-            pos="LEFT";
-        }
-        telemetry.addData("Did run loop? ", recognisedsounter);
-        telemetry.addData("recognised", isRecognised);
+//        List<Recognition> currentRecognitions = tfod.getRecognitions();
+//        boolean isRecognised = (currentRecognitions.size() != 0);
+//        int recognisedsounter = 0;
+//        while (!isRecognised && recognisedsounter <=150) {
+//            currentRecognitions = tfod.getRecognitions();
+//            isRecognised = (currentRecognitions.size() != 0);
+//            ++recognisedsounter;
+//            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+//            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+//            telemetry.update();
+//            sleep(20);
+//        }
+//        boolean isDefault = true;
+//        if (currentRecognitions.size() > 0){
+//            if (currentRecognitions.get(0).getRight() < 400 ) { //was 0
+//                pos = "MIDDLE";
+//            } else if (currentRecognitions.get(0).getRight() < 640) {
+//                pos = "MIDDLE";
+//            }
+//            isDefault = false;
+//        }
+//        else{
+//            pos="MIDDLE";
+//        }
+//        telemetry.addData("Did run loop? ", recognisedsounter);
+//        telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
 //        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
 //        telemetry.addData("deyects?", currentRecognitions.size());
@@ -279,6 +299,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 drive.followTrajectorySequence(scoredSpikeRight);
                 drive.followTrajectorySequence(backDropLineUpRight);
 
+
                 break;
 
 
@@ -298,8 +319,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         }
 
         //Deliver BackDrop Pixel
-        robot.backDropServo().setPosition(backDropServoLOW);
-        sleep(1500);
+        sleep(500);
 
 
         //Park Robot

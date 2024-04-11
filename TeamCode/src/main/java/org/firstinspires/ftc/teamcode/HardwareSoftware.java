@@ -57,6 +57,8 @@ public class HardwareSoftware {
     navXPIDController.PIDResult yawPIDResult;
 
 
+    public final double servoHome = 0.55;
+
 
     //Gyro PIDF Tuning Constants
     private final byte NAVX_DEVICE_UPDATE_RATE_HZ = 50;
@@ -196,7 +198,7 @@ public class HardwareSoftware {
 
 
 
-        pixelServo.setPosition(0.5);
+        pixelServo.setPosition(servoHome);
         intakeLock.setPosition(1);
         pixeldrop.setPosition(0);
         hangRelease.setPosition(1);

@@ -28,6 +28,10 @@ public class CompTeleKeaton extends OpMode {
     double minSpeed = 0.3;
     double speedMult = maxSpeed;
 
+    double deliveryHome = robot.servoHome;
+    double deliveryRight = 0;
+    double deliveryLeft = 1;
+
     boolean g1bDown = false;
     boolean g1xDown = false;
     boolean g2aDown = false;
@@ -135,20 +139,20 @@ public class CompTeleKeaton extends OpMode {
         }
 
         if(gamepad1.x){
-            robot.pixelServo().setPosition(1);
+            robot.pixelServo().setPosition(deliveryLeft);
             g1xDown = true;
         }
         else if(!gamepad1.x && g1xDown) {
-            robot.pixelServo().setPosition(0.47);
+            robot.pixelServo().setPosition(deliveryHome);
 
             g1xDown = false;
         }
         if(gamepad1.b){
-            robot.pixelServo().setPosition(0);
+            robot.pixelServo().setPosition(deliveryRight);
             g1bDown = true;
         }
         else if(!gamepad1.b && g1bDown) {
-            robot.pixelServo().setPosition(0.47);
+            robot.pixelServo().setPosition(deliveryHome);
 
             g1bDown = false;
         }

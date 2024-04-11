@@ -29,7 +29,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.695;
+    double backDropServoLOW = 0.9075;
     double driveTrainSlowedVelocity = 20;
     final boolean USE_WEBCAM = true;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
@@ -90,9 +90,9 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         //Trajectory to backdrop from scored Spike Mark
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
-                .back(1)
-                .strafeLeft(15)
-                .turn(Math.toRadians(178))
+//                .back(1)
+                .strafeLeft(18)
+                .turn(Math.toRadians(175))
                 .back(36)
                 // .forward(1)
                 .strafeLeft(17)
@@ -127,29 +127,33 @@ public class RedCloseTensfTest extends LinearOpMode {
                 .strafeLeft(4.5)
                 .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .forward(5)
+                .addTemporalMarker(1, () ->{
+                    robot.backDropServo().setPosition(backDropServoLOW);
+                })
                 .build();
 
         //Trajectory to line up Forward backdrop delivery
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                // .strafeRight(10)
-                .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                 .strafeLeft(1)
+                .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         //Trajectory to line up Left backdrop delivery
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
-                .strafeRight(13)
-                .forward(-3, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeRight(12)
+                .forward(-4, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         //Trajectory to park
         TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpMiddle.end())
-                .addTemporalMarker(0.5, () -> {
+                .addTemporalMarker(1, () -> {
                     robot.backDropServo().setPosition(backDropServoHIGH);
                 })
-                .forward(6)
+                .forward(10)
                 .turn(Math.toRadians(-90))
                 .strafeRight(4)
                 .back(34)
@@ -157,12 +161,14 @@ public class RedCloseTensfTest extends LinearOpMode {
 
         robot.backDropServo().setPosition(backDropServoHIGH);
 
-        String pos = "RIGHT";
+        String pos = "LEFT";
 
-        initTfod();
+//        initTfod();
 
         telemetry.addLine("Press a to add a 5 second wait");
         telemetry.update();
+
+
         boolean g1a = false;
         boolean wait = false;
         while(!isStarted() && !isStopRequested()){
@@ -184,39 +190,40 @@ public class RedCloseTensfTest extends LinearOpMode {
             }
         }
 
+        waitForStart();
+
 
         if(wait){
             sleep(5000);
         }
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        boolean isRecognised = (currentRecognitions.size() != 0);
-        int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=150) {
-            currentRecognitions = tfod.getRecognitions();
-            isRecognised = (currentRecognitions.size() != 0);
-            ++recognisedsounter;
-            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
-            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-            telemetry.update();
-            sleep(20);
-        }
-        boolean isDefault = true;
-        if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-                pos = "MIDDLE";
-            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-                pos = "RIGHT";
-            }
-            isDefault = false;
-        }
-        else{
-            pos="LEFT";
-        }
-        telemetry.addData("Did run loop? ", recognisedsounter);
-        telemetry.addData("recognised", isRecognised);
+//        List<Recognition> currentRecognitions = tfod.getRecognitions();
+//        boolean isRecognised = (currentRecognitions.size() != 0);
+//        int recognisedsounter = 0;
+//        while (!isRecognised && recognisedsounter <=150) {
+//            currentRecognitions = tfod.getRecognitions();
+//            isRecognised = (currentRecognitions.size() != 0);
+//            ++recognisedsounter;
+//            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+//            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+//            telemetry.update();
+//            sleep(20);
+//        }
+//        boolean isDefault = true;
+//        if (currentRecognitions.size() > 0){
+//            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+//                pos = "MIDDLE";
+//            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+//                pos = "RIGHT";
+//            }
+//            isDefault = false;
+//        }
+//        else{
+//            pos="RIGHT";
+//        }
+//        telemetry.addData("Did run loop? ", recognisedsounter);
+//        telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
 
-        waitForStart();
 
 //        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
 //        telemetry.addData("deyects?", currentRecognitions.size());
@@ -289,7 +296,7 @@ public class RedCloseTensfTest extends LinearOpMode {
                 //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
                 //   Use setModelFadileName() if you have downloaded a custom team model to the Robot Controller.
                 //.setModelAssetName(TFOD_MODEL_ASSET)
-                .setModelFileName("worldsModel.tflite") //TFOD_MODEL_FILE
+                .setModelFileName(TFOD_MODEL_FILE)
 
                 // The following default settings are available to un-comment and edit as needed to
                 // set parameters for custom models.

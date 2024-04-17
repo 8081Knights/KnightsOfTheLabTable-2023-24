@@ -57,7 +57,9 @@ public class HardwareSoftware {
     navXPIDController.PIDResult yawPIDResult;
 
 
-    public final double servoHome = 0.55;
+    public static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240412_164658.tflite";
+
+    public final double servoHome = 0.545;
 
 
     //Gyro PIDF Tuning Constants

@@ -25,7 +25,7 @@ android {
 
 repositories {
     flatDir {
-        dirs 'libs', '/home/sssssssssnake/Downloads/navx-micro-libs/android/libs'
+        dirs 'libs', 'C:\\\\Users\\\\Admin\\\\navx-micro\\\\android\\\\libs'
     }
 }
 

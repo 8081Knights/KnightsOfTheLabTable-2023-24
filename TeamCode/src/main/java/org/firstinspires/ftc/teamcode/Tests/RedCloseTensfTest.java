@@ -29,11 +29,11 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.9075;
-    double driveTrainSlowedVelocity = 20;
+    double backDropServoLOW = 0.91;
+    double driveTrainSlowedVelocity = 15;
     final boolean USE_WEBCAM = true;
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240410_154146.tflite";
-    final String[] LABELS = {
+    HardwareSoftware robot = new HardwareSoftware();
+    String TFOD_MODEL_FILE = robot.TFOD_MODEL_FILE;    final String[] LABELS = {
             "BlueTeamProp",
             "RedTeamProp",
     };
@@ -51,7 +51,6 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
         //Initializing Robot Hardware
-        HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
         robot.intakeLock().setPosition(0.2);
         robot.pixeldrop().setPosition(1);
@@ -97,7 +96,11 @@ public class RedCloseTensfTest extends LinearOpMode {
                 // .forward(1)
                 .strafeLeft(17)
                 .forward(4)
+                .turn(Math.toRadians(-15))
                 .build();
+
+        Pose2d spikeRightEndProper = new Pose2d(-64, 78, Math.toRadians(0));
+
 
         //Trajectory to deliver Forward Spike Mark
         Trajectory spikeForward = drive.trajectoryBuilder(toSpikeMark.end())
@@ -123,37 +126,47 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
         //Trajectory to line up Right backdrop delivery
-        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
-                .strafeLeft(4.5)
-                .forward(-3.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(spikeRightEndProper)
+                .strafeLeft(5)
+                .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .forward(5)
-                .addTemporalMarker(1, () ->{
+                .addTemporalMarker(0.9, () ->{
                     robot.backDropServo().setPosition(backDropServoLOW);
+                })
+                .addTemporalMarker(1.7, () ->{
+                    robot.backDropServo().setPosition(backDropServoHIGH);
                 })
                 .build();
 
         //Trajectory to line up Forward backdrop delivery
         TrajectorySequence backDropLineUpMiddle = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
                  .strafeLeft(1)
-                .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(-7)
+                .forward(5.5, SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(.75, () ->{
+                    robot.backDropServo().setPosition(0.91);
+                })
+                .addTemporalMarker(1.6, () ->{
+                    robot.backDropServo().setPosition(backDropServoHIGH);
+                })
                 .build();
 
 
         //Trajectory to line up Left backdrop delivery
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeForwardProper.end())
-                .strafeRight(12)
-                .forward(-4, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeRight(13)
+                .forward(-4.5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         //Trajectory to park
         TrajectorySequence parkProper = drive.trajectorySequenceBuilder(backDropLineUpMiddle.end())
-                .addTemporalMarker(1, () -> {
+                .addTemporalMarker(.25, () -> {
                     robot.backDropServo().setPosition(backDropServoHIGH);
                 })
-                .forward(10)
+                .forward(7)
                 .turn(Math.toRadians(-90))
                 .strafeRight(4)
                 .back(34)
@@ -168,37 +181,7 @@ public class RedCloseTensfTest extends LinearOpMode {
         telemetry.addLine("Press a to add a 5 second wait");
         telemetry.update();
 
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        boolean isRecognised = (currentRecognitions.size() != 0);
-        int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=150) {
-            currentRecognitions = tfod.getRecognitions();
-            isRecognised = (currentRecognitions.size() != 0);
-            ++recognisedsounter;
-            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
-            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-            telemetry.update();
-            sleep(20);
-        }
-        boolean isDefault = true;
-        if (currentRecognitions.size() > 0){
-            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-                pos = "MIDDLE";
-            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
-                pos = "RIGHT";
-            }
-            isDefault = false;
-        }
-        else{
-            pos="RIGHT";
-        }
-        telemetry.addData("Did run loop? ", recognisedsounter);
-        telemetry.addData("recognised", isRecognised);
-        telemetry.addData("posotion: ", pos);
 
-
-        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
-        telemetry.addData("deyects?", currentRecognitions.size());
 //        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());
         telemetry.update();
 
@@ -226,6 +209,38 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
         waitForStart();
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        boolean isRecognised = (currentRecognitions.size() != 0);
+        int recognisedsounter = 0;
+        while (!isRecognised && recognisedsounter <=150) {
+            currentRecognitions = tfod.getRecognitions();
+            isRecognised = (currentRecognitions.size() != 0);
+            ++recognisedsounter;
+            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+            telemetry.update();
+            sleep(20);
+        }
+        boolean isDefault = true;
+        if (currentRecognitions.size() > 0){
+            if (currentRecognitions.get(0).getRight() < 400 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+                pos = "MIDDLE";
+            } else if (currentRecognitions.get(0).getRight() < 640 && currentRecognitions.get(0).getLabel() == LABELS[1]) {
+                pos = "RIGHT";
+            }
+            isDefault = false;
+        }
+        else{
+            pos="LEFT";
+        }
+        telemetry.addData("Did run loop? ", recognisedsounter);
+        telemetry.addData("recognised", isRecognised);
+        telemetry.addData("posotion: ", pos);
+
+
+        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
+        telemetry.addData("deyects?", currentRecognitions.size());
+        telemetry.update();
 
 
         if(wait){
@@ -258,6 +273,8 @@ public class RedCloseTensfTest extends LinearOpMode {
                 drive.followTrajectorySequence(scoredSpikeLeft);
                 robot.intakeLock().setPosition(0);
                 drive.followTrajectorySequence(backDropLineUpLeft);
+                robot.backDropServo().setPosition(0.9);
+                sleep(1500);
                 break;
 
             case "RIGHT":
@@ -267,6 +284,7 @@ public class RedCloseTensfTest extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeRight);
+                drive.setPoseEstimate(spikeRightEndProper);
                 drive.followTrajectorySequence(backDropLineUpRight);
                 break;
 
@@ -278,11 +296,12 @@ public class RedCloseTensfTest extends LinearOpMode {
                 sleep(500);
                 drive.followTrajectorySequence(scoredSpikeForwardProper);
                 drive.followTrajectorySequence(backDropLineUpMiddle);
+
+
                 break;
         }
 
-        robot.backDropServo().setPosition(backDropServoLOW);
-        sleep(1500);
+
 
         drive.followTrajectorySequence(parkProper);
         robot.intakeLock().setPosition(1);

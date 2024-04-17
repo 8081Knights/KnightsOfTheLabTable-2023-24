@@ -32,7 +32,8 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
     final boolean USE_WEBCAM = true;
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/model_20240119_180239.tflite";
+    HardwareSoftware robot = new HardwareSoftware();
+    String TFOD_MODEL_FILE = robot.TFOD_MODEL_FILE;
     final String[] LABELS = {
             "BlueTeamProp",
             "RedTeamProp",
@@ -48,7 +49,6 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
         //Hardware Initialization
-        HardwareSoftware robot = new HardwareSoftware();
         robot.init(hardwareMap);
         robot.intakeLock().setPosition(0.2);
         robot.pixeldrop().setPosition(1);
@@ -180,7 +180,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                // .back(2)
                 .forward(5)
-                .addTemporalMarker(1.2, () ->{
+                .addTemporalMarker(1.1, () ->{
                     robot.backDropServo().setPosition(backDropServoLOW);
 
                 })
@@ -207,7 +207,34 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
         String pos = "MIDDLE";
 
-//        initTfod();
+        initTfod();
+                List<Recognition> currentRecognitions = tfod.getRecognitions();
+        boolean isRecognised = (currentRecognitions.size() != 0);
+        int recognisedsounter = 0;
+        while (!isRecognised && recognisedsounter <=150) {
+            currentRecognitions = tfod.getRecognitions();
+            isRecognised = (currentRecognitions.size() != 0);
+            ++recognisedsounter;
+            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
+            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
+            telemetry.update();
+            sleep(20);
+        }
+        boolean isDefault = true;
+        if (currentRecognitions.size() > 0){
+            if (currentRecognitions.get(0).getRight() < 400 ) { //was 0
+                pos = "MIDDLE";
+            } else if (currentRecognitions.get(0).getRight() < 640) {
+                pos = "RIGHT";
+            }
+            isDefault = false;
+        }
+        else{
+            pos="LEFT";
+        }
+        telemetry.addData("Did run loop? ", recognisedsounter);
+        telemetry.addData("recognised", isRecognised);
+        telemetry.addData("posotion: ", pos);
 
         telemetry.addLine("Press a to add a 5 second wait");
         telemetry.update();
@@ -238,33 +265,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
             sleep(5000);
         }
 
-//        List<Recognition> currentRecognitions = tfod.getRecognitions();
-//        boolean isRecognised = (currentRecognitions.size() != 0);
-//        int recognisedsounter = 0;
-//        while (!isRecognised && recognisedsounter <=150) {
-//            currentRecognitions = tfod.getRecognitions();
-//            isRecognised = (currentRecognitions.size() != 0);
-//            ++recognisedsounter;
-//            telemetry.addData("RunLoop? ", currentRecognitions.size() + recognisedsounter);
-//            telemetry.addData("Recognised? ", (isRecognised) ? ("yes") : ("no"));
-//            telemetry.update();
-//            sleep(20);
-//        }
-//        boolean isDefault = true;
-//        if (currentRecognitions.size() > 0){
-//            if (currentRecognitions.get(0).getRight() < 400 ) { //was 0
-//                pos = "MIDDLE";
-//            } else if (currentRecognitions.get(0).getRight() < 640) {
-//                pos = "MIDDLE";
-//            }
-//            isDefault = false;
-//        }
-//        else{
-//            pos="MIDDLE";
-//        }
-//        telemetry.addData("Did run loop? ", recognisedsounter);
-//        telemetry.addData("recognised", isRecognised);
-        telemetry.addData("posotion: ", pos);
+
 //        telemetry.addData("Default?: ", (isDefault) ? ("yes") : ("No"));
 //        telemetry.addData("deyects?", currentRecognitions.size());
 //        telemetry.addData("bounding box right ", currentRecognitions.get(0).getRight());

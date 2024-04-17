@@ -208,7 +208,31 @@ public class BlueCloeTensrTest extends LinearOpMode {
         String pos = "MIDDLE";
 
         initTfod();
-                List<Recognition> currentRecognitions = tfod.getRecognitions();
+
+        boolean g1a = false;
+        boolean wait = false;
+        while(!isStarted() && !isStopRequested()){
+            if(gamepad1.a){
+                g1a = true;
+            }
+            else if(g1a && !gamepad1.a){
+                g1a = false;
+                if(!wait){
+                    wait = true;
+                    telemetry.addLine("5 Second wait Added");
+                    telemetry.update();
+                }
+                else{
+                    wait = false;
+                    telemetry.addLine("Press a to add a 5 second wait");
+                    telemetry.update();
+                }
+            }
+        }
+
+        waitForStart();
+
+        List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
         while (!isRecognised && recognisedsounter <=150) {
@@ -238,29 +262,8 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
         telemetry.addLine("Press a to add a 5 second wait");
         telemetry.update();
-        boolean g1a = false;
-        boolean wait = false;
-        while(!isStarted() && !isStopRequested()){
-            if(gamepad1.a){
-                g1a = true;
-            }
-            else if(g1a && !gamepad1.a){
-                g1a = false;
-                if(!wait){
-                    wait = true;
-                    telemetry.addLine("5 Second wait Added");
-                    telemetry.update();
-                }
-                else{
-                    wait = false;
-                    telemetry.addLine("Press a to add a 5 second wait");
-                    telemetry.update();
-                }
-            }
-        }
 
-        waitForStart();
-
+        
         if(wait){
             sleep(5000);
         }

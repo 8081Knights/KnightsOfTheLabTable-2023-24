@@ -90,11 +90,11 @@ public class RedCloseTensfTest extends LinearOpMode {
         //Trajectory to backdrop from scored Spike Mark
         TrajectorySequence scoredSpikeRight = drive.trajectorySequenceBuilder(spikeRight.end())
 //                .back(1)
-                .strafeLeft(18)
-                .turn(Math.toRadians(175))
+                .strafeLeft(-18)
+                .turn(Math.toRadians(180))
                 .back(36)
                 // .forward(1)
-                .strafeLeft(17)
+                .strafeLeft(-17)
                 .forward(4)
                 .turn(Math.toRadians(-15))
                 .build();
@@ -126,8 +126,8 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
         //Trajectory to line up Right backdrop delivery
-        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(spikeRightEndProper)
-                .strafeLeft(5)
+        TrajectorySequence backDropLineUpRight = drive.trajectorySequenceBuilder(scoredSpikeRight.end())
+                .strafeLeft(-5)
                 .forward(-5, SampleMecanumDrive.getVelocityConstraint(driveTrainSlowedVelocity, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .forward(5)
@@ -212,7 +212,7 @@ public class RedCloseTensfTest extends LinearOpMode {
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=150) {
+        while (!isRecognised && recognisedsounter <=50) {
             currentRecognitions = tfod.getRecognitions();
             isRecognised = (currentRecognitions.size() != 0);
             ++recognisedsounter;
@@ -244,7 +244,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
         if(wait){
-            sleep(5000);
+            sleep(8000);
         }
 
 
@@ -257,10 +257,10 @@ public class RedCloseTensfTest extends LinearOpMode {
                 drive.followTrajectorySequence(spikeLeft);
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeLeft);
-                //  drive.followTrajectorySequence(scoredSpikeForward);
-                robot.intakeLock().setPosition(0);
-                drive.followTrajectorySequence(backDropLineUpLeft);
+//                drive.followTrajectorySequence(scoredSpikeLeft);
+//                //  drive.followTrajectorySequence(scoredSpikeForward);
+//                robot.intakeLock().setPosition(0);
+//                drive.followTrajectorySequence(backDropLineUpLeft);
                 break;
 
             case "LEFT":
@@ -270,11 +270,11 @@ public class RedCloseTensfTest extends LinearOpMode {
                 drive.followTrajectorySequence(spikeLeft);
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeLeft);
-                robot.intakeLock().setPosition(0);
-                drive.followTrajectorySequence(backDropLineUpLeft);
-                robot.backDropServo().setPosition(0.9);
-                sleep(1500);
+//                drive.followTrajectorySequence(scoredSpikeLeft);
+//                robot.intakeLock().setPosition(0);
+//                drive.followTrajectorySequence(backDropLineUpLeft);
+//                robot.backDropServo().setPosition(0.9);
+//                sleep(1500);
                 break;
 
             case "RIGHT":
@@ -283,9 +283,9 @@ public class RedCloseTensfTest extends LinearOpMode {
                 drive.followTrajectorySequence(spikeRight);
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeRight);
-                drive.setPoseEstimate(spikeRightEndProper);
-                drive.followTrajectorySequence(backDropLineUpRight);
+//                drive.followTrajectorySequence(scoredSpikeRight);
+//                drive.setPoseEstimate(spikeRightEndProper);
+//                drive.followTrajectorySequence(backDropLineUpRight);
                 break;
 
             case "MIDDLE":
@@ -294,8 +294,8 @@ public class RedCloseTensfTest extends LinearOpMode {
                 drive.followTrajectory(spikeForward);
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeForwardProper);
-                drive.followTrajectorySequence(backDropLineUpMiddle);
+//                drive.followTrajectorySequence(scoredSpikeForwardProper);
+//                drive.followTrajectorySequence(backDropLineUpMiddle);
 
 
                 break;
@@ -303,7 +303,7 @@ public class RedCloseTensfTest extends LinearOpMode {
 
 
 
-        drive.followTrajectorySequence(parkProper);
+//        drive.followTrajectorySequence(parkProper);
         robot.intakeLock().setPosition(1);
         sleep(5000);
     }

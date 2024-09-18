@@ -196,6 +196,13 @@ public class CompTeleKeaton extends OpMode {
         if((gamepad2.right_bumper || gamepad2.left_bumper) && timer.time(TimeUnit.SECONDS) >= timeToEnd){
             robot.hangRelease().setPosition(0);
         }
+        if(gamepad2.dpad_up){
+            robot.backDropServo().setPosition(0);
+
+        }
+        if(gamepad2.dpad_down){
+            robot.backDropServo().setPosition(1);
+        }
 
 
         if (gamepad2.x){

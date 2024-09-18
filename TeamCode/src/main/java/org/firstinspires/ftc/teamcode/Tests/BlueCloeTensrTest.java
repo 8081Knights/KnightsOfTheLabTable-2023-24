@@ -28,7 +28,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
     double backDropServoHIGH = 0.2;
-    double backDropServoLOW = 0.9075;
+    double backDropServoLOW = 0.91;
 
 
     final boolean USE_WEBCAM = true;
@@ -142,7 +142,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         x++;
 
         TrajectorySequence backDropLineUpLeft = drive.trajectorySequenceBuilder(scoredSpikeLeft.end())
-                .strafeLeft(6)
+                .strafeLeft(3)
                 .forward(-6,SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL) )
                 .forward(5)
@@ -235,7 +235,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         boolean isRecognised = (currentRecognitions.size() != 0);
         int recognisedsounter = 0;
-        while (!isRecognised && recognisedsounter <=150) {
+        while (!isRecognised && recognisedsounter <=75) {
             currentRecognitions = tfod.getRecognitions();
             isRecognised = (currentRecognitions.size() != 0);
             ++recognisedsounter;
@@ -260,12 +260,12 @@ public class BlueCloeTensrTest extends LinearOpMode {
         telemetry.addData("recognised", isRecognised);
         telemetry.addData("posotion: ", pos);
 
-        telemetry.addLine("Press a to add a 5 second wait");
+        telemetry.addLine("Press a to add a 8 second wait");
         telemetry.update();
 
-        
+
         if(wait){
-            sleep(5000);
+            sleep(8000);
         }
 
 
@@ -285,9 +285,9 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
 
-                drive.followTrajectorySequence(scoredSpikeLeft);
-                robot.intakeLock().setPosition(0);
-                drive.followTrajectorySequence(backDropLineUpLeft);
+//                drive.followTrajectorySequence(scoredSpikeLeft);
+//                robot.intakeLock().setPosition(0);
+//                drive.followTrajectorySequence(backDropLineUpLeft);
 
                 break;
 
@@ -300,8 +300,8 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
 
-                drive.followTrajectorySequence(scoredSpikeRight);
-                drive.followTrajectorySequence(backDropLineUpRight);
+//                drive.followTrajectorySequence(scoredSpikeRight);
+//                drive.followTrajectorySequence(backDropLineUpRight);
 
 
                 break;
@@ -315,8 +315,8 @@ public class BlueCloeTensrTest extends LinearOpMode {
                 //Deliver Spike Mark Pixel
                 robot.pixeldrop().setPosition(0);
                 sleep(500);
-                drive.followTrajectorySequence(scoredSpikeForwardProper);
-                drive.followTrajectorySequence(backDropLineUpMiddle);
+//                drive.followTrajectorySequence(scoredSpikeForwardProper);
+//                drive.followTrajectorySequence(backDropLineUpMiddle);
 
                 break;
 
@@ -327,7 +327,7 @@ public class BlueCloeTensrTest extends LinearOpMode {
 
 
         //Park Robot
-        drive.followTrajectorySequence(parkProper);
+//        drive.followTrajectorySequence(parkProper);
 
         //Set Up Hardware for TeleOp
         robot.intakeLock().setPosition(1);
